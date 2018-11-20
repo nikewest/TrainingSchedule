@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nfc_not_available">NFC НЕ ДОСТУПЕН</string>
+    <string name="app_name">Расписание тренировок</string>
+    <string name="login_failed">Ошибка входа</string>
+    <string name="no_internet">Нет подключения к интернет</string>
+    <string name="cant_write_off">Не удалось списать</string>
+    <string name="cant_cancel">Не удалось отменить</string>
+    <string name="login">ВХОД</string>
+    <string name="training">тренировка</string>
+    <string name="schedule">расписание</string>
+    <string name="clients">клиенты</string>
+    <string name="attach_card">приложите карту</string>
+    <string name="one_day">1 день</string>
+    <string name="three_day">3 дня</string>
+    <string name="week">неделя</string>
+    <string name="cant_edit">не удалось изменить</string>
+    <string name="writtenoff_cantedit">списана, нельзя редактировать</string>
+    <string name="dropincorrect">перемещение некорректно</string>
+    <string name="nfc_canceled">NFC сканирование отменено</string>
+    <string name="training_canceled">тренировка отменена</string>
+    <string name="training_writtenoff">тренировка списана</string>
+    <string name="training_moved">тренировка перенесена</string>
+    <string name="new_training_added">тренировка добавлена</string>
+    <string name="training_not_added">тренировка не добавлена</string>
+    <string name="pref_service_address_title">Адрес сервиса</string>
+    <string name="pref_service_address_hint">http://АДРЕС_СЕРВЕРА/ИМЯ_ИНФОРМАЦИОННОЙ_БАЗЫ/</string>
+    <string name="settings">Настройки</string>
+    <string name="add_new_training">Добавить тренировку?</string>
+    <string name="cant_load_events">Не удалось загрузить собятия</string>
+    <string name="error_load_card_info">Ошибка получения информации по карте</string>
+</resources>

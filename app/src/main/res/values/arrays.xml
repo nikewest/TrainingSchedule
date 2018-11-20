@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="event_context_menu">
+        <item>Write off</item>
+        <item>Cancel</item>
+    </string-array>
+</resources>

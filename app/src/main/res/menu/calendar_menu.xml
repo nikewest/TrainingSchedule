@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/one_day_view"
+        android:title="@string/one_day"/>
+
+    <item android:id="@+id/three_day_view"
+        android:title="@string/three_day"/>
+
+    <item android:id="@+id/whole_week_view"
+        android:title="@string/week"/>
+</menu>

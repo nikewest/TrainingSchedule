@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_tag" translatable="false">NETWORK</string>
+    <string name="util_tag" translatable="false">UTIL</string>
+    <string name="weekview_tag" translatable="false">WEEKVIEW</string>
+</resources>
