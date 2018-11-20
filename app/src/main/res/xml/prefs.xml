@@ -3,7 +3,6 @@
 <EditTextPreference
     android:key="@string/pref_service_address_key"
     android:title="@string/pref_service_address_title"
-    android:defaultValue="http://10.42.200.35/Develop_Nikiforov/"
     android:hint="@string/pref_service_address_hint">
 
 </EditTextPreference>
