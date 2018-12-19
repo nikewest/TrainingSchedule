@@ -1,9 +1,11 @@
 package ru.alexfitness.trainingschedule.activity;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,9 +29,10 @@ import ru.alexfitness.trainingschedule.model.Trainer;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 
+import ru.alexfitness.trainingschedule.util.AFStopScanAppCompatActivity;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonObjectRequest;
 
-public class AuthenticationActivity extends AppCompatActivity {
+public class AuthenticationActivity extends AFStopScanAppCompatActivity {
 
     public static final int NFCSCAN_REQUEST_CODE = 1;
 
@@ -82,9 +85,11 @@ public class AuthenticationActivity extends AppCompatActivity {
                     getRequestQueue().add(serviceApiRequest);
                 } else {
                     Toast.makeText(this, R.string.no_internet, Toast.LENGTH_LONG).show();
+                    enableLogin(true);
                 }
             } else {
                 Toast.makeText(this, R.string.nfc_canceled, Toast.LENGTH_LONG).show();
+                enableLogin(true);
             }
         }
     }
@@ -113,6 +118,11 @@ public class AuthenticationActivity extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
         finishAndRemoveTask();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

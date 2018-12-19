@@ -32,9 +32,10 @@ import ru.alexfitness.trainingschedule.model.TrainingsBalance;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 import ru.alexfitness.trainingschedule.util.AFApplication;
+import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
 
-public class SelectClientActivity extends Activity {
+public class SelectClientActivity extends AFStopScanActivity {
 
     public static final String TRAININGS_BALANCE_EXTRA_KEY = "SelectClientActivity.extra.trainingsBalance";
 

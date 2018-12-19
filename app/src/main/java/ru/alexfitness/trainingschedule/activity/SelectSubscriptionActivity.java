@@ -29,10 +29,11 @@ import ru.alexfitness.trainingschedule.model.Card;
 import ru.alexfitness.trainingschedule.model.Subscription;
 import ru.alexfitness.trainingschedule.model.TrainingsBalance;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
+import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonObjectRequest;
 
-public class SelectSubscriptionActivity extends Activity {
+public class SelectSubscriptionActivity extends AFStopScanActivity {
 
     public static final int NFC_REQUEST_CODE = 1;
     public static final String SUBSCRIPTION_EXTRA_KEY = "SelectSubscriptionActivity.extra.subscription";

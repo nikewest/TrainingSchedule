@@ -40,6 +40,7 @@ import ru.alexfitness.trainingschedule.model.Trainer;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 import ru.alexfitness.trainingschedule.util.AFApplication;
+import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.AFWeekViewEventFactory;
 import ru.alexfitness.trainingschedule.util.CalendarSupport;
 import ru.alexfitness.trainingschedule.util.Converter;
@@ -47,7 +48,7 @@ import ru.alexfitness.trainingschedule.util.EventDragShadowBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
 import ru.alexfitness.trainingschedule.util.ServiceApiStringRequest;
 
-public class ScheduleActivity extends Activity implements MonthLoader.MonthChangeListener {
+public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.MonthChangeListener {
 
     public static final int NFCSCAN_REQUEST_CODE = 1;
     public static final String EVENT_ID_EXTRA_KEY = "ScheduleActivity.extra.eventId";

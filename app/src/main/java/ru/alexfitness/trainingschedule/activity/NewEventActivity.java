@@ -24,11 +24,12 @@ import ru.alexfitness.trainingschedule.model.TrainingsBalance;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 import ru.alexfitness.trainingschedule.util.AFApplication;
+import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.CalendarSupport;
 import ru.alexfitness.trainingschedule.util.Converter;
 import ru.alexfitness.trainingschedule.util.ServiceApiStringRequest;
 
-public class NewEventActivity extends Activity {
+public class NewEventActivity extends AFStopScanActivity {
 
     public static final String EVENT_ADDED_EXTRA_KEY = "NewEventActivity.extra.eventAdded";
 
