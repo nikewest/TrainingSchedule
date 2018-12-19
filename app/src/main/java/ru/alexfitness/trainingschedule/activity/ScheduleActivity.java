@@ -206,14 +206,15 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
             @Override
             public void onEmptyViewClicked(final Calendar time) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
-                dialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                dialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(ScheduleActivity.this, SelectClientActivity.class);
                         intent.putExtra(NEW_EVENT_TIME_EXTRA_KEY, time);
                         startActivity(intent);
                     }
-                }).setCancelable(true).setMessage(R.string.add_new_training);
+                }).setCancelable(true).setMessage(R.string.add_new_training)
+                .setNegativeButton(android.R.string.no, null);
                 AlertDialog dialog = dialogBuilder.create();
                 dialog.show();
             }
