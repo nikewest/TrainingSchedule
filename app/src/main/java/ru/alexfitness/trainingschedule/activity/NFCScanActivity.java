@@ -39,7 +39,7 @@ public class NFCScanActivity extends Activity {
         nfcAdapter = nfcManager.getDefaultAdapter();
         if(nfcAdapter!=null && nfcAdapter.isEnabled()){
             pendingIntent = PendingIntent.getActivity(this,0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-            intentFiltersArray = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)};
+            intentFiltersArray = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED), new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED)};
             techListArray = new String[][]{new String[]{NfcA.class.getName(), MifareClassic.class.getName(), NdefFormatable.class.getName()}};
 
             Intent intent = getIntent();
@@ -59,7 +59,7 @@ public class NFCScanActivity extends Activity {
         super.onNewIntent(intent);
         if(intent != null){
             String intentAction = intent.getAction();
-            if((intentAction!=null)&&(intentAction.equals(NfcAdapter.ACTION_TECH_DISCOVERED))){
+            if((intentAction!=null)&&(intentAction.equals(NfcAdapter.ACTION_TECH_DISCOVERED) || intentAction.equals(NfcAdapter.ACTION_TAG_DISCOVERED) || intentAction.equals(NfcAdapter.ACTION_NDEF_DISCOVERED))){
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 byte[] tagId = tag.getId();
                 String tagIdHex = Converter.tagIdToHexString(tagId);

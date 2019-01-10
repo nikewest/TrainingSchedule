@@ -10,11 +10,6 @@ public class AFStopScanActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if(intent != null){
-            String intentAction = intent.getAction();
-            if((intentAction!=null)&&(intentAction.equals(NfcAdapter.ACTION_TAG_DISCOVERED))){
-            }
-        }
     }
 
     @Override
@@ -32,7 +27,7 @@ public class AFStopScanActivity extends Activity {
     private void startNfcScan() {
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(nfcAdapter!=null) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,0, new Intent(this, this.getClass()), 0);
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
     }
