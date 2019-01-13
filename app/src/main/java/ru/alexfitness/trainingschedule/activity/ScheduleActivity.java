@@ -166,6 +166,13 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                                     return false;
                                 }
 
+                                //round start and end time to closer hour step
+                                if(dropStartTime.get(Calendar.MINUTE)>=30){
+                                    dropStartTime.add(Calendar.HOUR, 1);
+                                }
+                                dropStartTime.set(Calendar.MINUTE, 0);
+                                dropStartTime.set(Calendar.SECOND, 0);
+
                                 final Calendar dropEndTime = Calendar.getInstance();
                                 dropEndTime.setTimeInMillis(dropStartTime.getTimeInMillis() + diff);
 
