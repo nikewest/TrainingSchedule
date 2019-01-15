@@ -1,6 +1,5 @@
 package ru.alexfitness.trainingschedule.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -8,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -421,5 +421,8 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
 
         weekView.setWaiting(state);
     }
+
+
+
 
 }

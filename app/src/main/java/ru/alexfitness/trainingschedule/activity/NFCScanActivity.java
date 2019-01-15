@@ -1,6 +1,5 @@
 package ru.alexfitness.trainingschedule.activity;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -15,9 +14,10 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import ru.alexfitness.trainingschedule.R;
+import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.Converter;
 
-public class NFCScanActivity extends Activity {
+public class NFCScanActivity extends AFStopScanActivity {
 
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
@@ -32,6 +32,7 @@ public class NFCScanActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_nfcscan);
 
         NfcManager nfcManager = (NfcManager) this.getSystemService(Context.NFC_SERVICE);
@@ -78,7 +79,7 @@ public class NFCScanActivity extends Activity {
         }
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         startNfcScan();
@@ -100,5 +101,5 @@ public class NFCScanActivity extends Activity {
         if(nfcAdapter!=null) {
             nfcAdapter.disableForegroundDispatch(this);
         }
-    }
+    }*/
 }
