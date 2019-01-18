@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-<EditTextPreference
-    android:key="@string/pref_service_address_key"
-    android:title="@string/pref_service_address_title"
-    android:hint="@string/pref_service_address_hint">
+    <EditTextPreference
+        android:key="@string/pref_service_address_key"
+        android:title="@string/pref_service_address_title"
+        android:hint="@string/pref_service_address_hint">
 
-</EditTextPreference>
+    </EditTextPreference>
+    <EditTextPreference
+        android:defaultValue="60"
+        android:summary="@string/pref_schedule_time_step_hint"
+        android:inputType="numberDecimal"
+        android:key="@string/pref_schedule_time_step_key"
+        android:numeric="decimal"
+        android:title="@string/pref_schedule_time_step_title" />
+
+    <EditTextPreference
+        android:key="@string/pref_auth_timeout_key"
+        android:title="@string/pref_auth_timeout_title"
+        android:inputType="numberDecimal"
+        android:summary="@string/pref_auth_timeout_hint"
+        android:numeric="decimal"
+        android:defaultValue="30"/>
+
 </PreferenceScreen>

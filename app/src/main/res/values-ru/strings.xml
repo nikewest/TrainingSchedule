@@ -29,4 +29,9 @@
     <string name="add_new_training">Добавить тренировку?</string>
     <string name="cant_load_events">Не удалось загрузить собятия</string>
     <string name="error_load_card_info">Ошибка получения информации по карте</string>
+    <string name="pref_schedule_time_step_hint">минуты</string>
+    <string name="pref_schedule_time_step_title">Интервал в расписании</string>
+    <string name="toast_msg_edit_pref_schedule_time_step">должно быть делителем 60</string>
+    <string name="pref_auth_timeout_title">Тайм-аут окончания авторизации</string>
+    <string name="pref_auth_timeout_hint">время бездействия после которого авторизация будет сброшена (сек.)</string>
 </resources>

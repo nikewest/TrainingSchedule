@@ -30,5 +30,12 @@
     <string name="add_new_training">Add training?</string>
     <string name="cant_load_events">Can not load events</string>
     <string name="error_load_card_info">Can\'t read card info from server</string>
+    <string name="pref_schedule_time_step_hint">minutes</string>
+    <string name="pref_schedule_time_step_key" translatable="false">pref_schedule_time_step_key</string>
+    <string name="pref_schedule_time_step_title">Schedule time step</string>
+    <string name="toast_msg_edit_pref_schedule_time_step">must be a divider of 60</string>
+    <string name="pref_auth_timeout_key" translatable="false">pref_auth_timeout_key</string>
+    <string name="pref_auth_timeout_title">Authorization end timeout</string>
+    <string name="pref_auth_timeout_hint">idle time after which the authorization will be reset (sec.)</string>
 
 </resources>

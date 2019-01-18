@@ -5,9 +5,11 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -63,9 +65,12 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
 
     private volatile ArrayList<AFWeekViewEvent> eventsList = new ArrayList<>();
 
+    private int scheduleTimeStep;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setEnableAuthEndTimeOut(false);
         setContentView(R.layout.activity_schedule);
 
         Intent intent = getIntent();
@@ -167,11 +172,18 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                                 }
 
                                 //round start and end time to closer hour step
-                                if(dropStartTime.get(Calendar.MINUTE)>=30){
+                                int stepDiff = dropStartTime.get(Calendar.MINUTE) % scheduleTimeStep;
+                                if(stepDiff > scheduleTimeStep/2){
+                                    dropStartTime.add(Calendar.MINUTE, scheduleTimeStep - stepDiff);
+                                } else {
+                                    dropStartTime.add(Calendar.MINUTE, -stepDiff);
+                                }
+                                dropStartTime.set(Calendar.SECOND, 0);
+                                /*if(dropStartTime.get(Calendar.MINUTE)>=30){
                                     dropStartTime.add(Calendar.HOUR, 1);
                                 }
                                 dropStartTime.set(Calendar.MINUTE, 0);
-                                dropStartTime.set(Calendar.SECOND, 0);
+                                dropStartTime.set(Calendar.SECOND, 0);*/
 
                                 final Calendar dropEndTime = Calendar.getInstance();
                                 dropEndTime.setTimeInMillis(dropStartTime.getTimeInMillis() + diff);
@@ -227,6 +239,9 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
             }
         });
         goToCurrentHour();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        scheduleTimeStep = Integer.parseInt(prefs.getString(getString(R.string.pref_schedule_time_step_key), "60"));
     }
 
     @Override
