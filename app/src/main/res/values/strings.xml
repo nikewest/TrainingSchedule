@@ -37,5 +37,7 @@
     <string name="pref_auth_timeout_key" translatable="false">pref_auth_timeout_key</string>
     <string name="pref_auth_timeout_title">Authorization end timeout</string>
     <string name="pref_auth_timeout_hint">idle time after which the authorization will be reset (sec.)</string>
+    <string name="settings_pwd_dialog_message">Enter admin password</string>
+    <string name="wrong_admin_pwd">WRONG ADMIN PWD!</string>
 
 </resources>

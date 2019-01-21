@@ -1,14 +1,18 @@
 package ru.alexfitness.trainingschedule.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +36,7 @@ import ru.alexfitness.trainingschedule.util.ServiceApiJsonObjectRequest;
 public class AuthenticationActivity extends AFStopScanAppCompatActivity {
 
     public static final int NFCSCAN_REQUEST_CODE = 1;
+    public static final String SETTINGS_PWD = "11235813";
 
     private ProgressBar loginProgressBar;
     private TextView loginTextView;
@@ -140,7 +145,26 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_item_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+
+                final AlertDialog.Builder dialogBuider = new AlertDialog.Builder(this);
+                LayoutInflater layoutInflater = getLayoutInflater();
+                View dialogView = layoutInflater.inflate(R.layout.dialog_settings_pwd, null);
+                final EditText pwdEditText = (EditText) dialogView.findViewById(R.id.settingPwdEditText);
+                dialogBuider.setView(dialogView);
+                dialogBuider.setMessage(R.string.settings_pwd_dialog_message);
+                dialogBuider.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i("SETTINGS PWD", pwdEditText.getText().toString());
+                        if(pwdEditText.getText().toString().equals(SETTINGS_PWD)){
+                            startActivity(new Intent(AuthenticationActivity.this, SettingsActivity.class));
+                        } else {
+                            Toast.makeText(AuthenticationActivity.this, R.string.wrong_admin_pwd, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                dialogBuider.setNegativeButton(android.R.string.cancel, null);
+                dialogBuider.create().show();
                 return true;
         }
         return false;
