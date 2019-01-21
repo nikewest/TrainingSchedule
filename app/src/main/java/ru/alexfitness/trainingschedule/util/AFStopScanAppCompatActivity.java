@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.activity.AuthenticationActivity;
-import ru.alexfitness.trainingschedule.activity.NFCScanActivity;
 
 public class AFStopScanAppCompatActivity extends AppCompatActivity {
 

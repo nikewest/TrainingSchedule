@@ -2,18 +2,22 @@ package ru.alexfitness.trainingschedule.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +33,7 @@ import ru.alexfitness.trainingschedule.util.CalendarSupport;
 import ru.alexfitness.trainingschedule.util.Converter;
 import ru.alexfitness.trainingschedule.util.ServiceApiStringRequest;
 
-public class NewEventActivity extends AFStopScanActivity {
+public class NewEventActivity extends AFStopScanActivity implements TimePickerDialog.OnTimeSetListener {
 
     public static final String EVENT_ADDED_EXTRA_KEY = "NewEventActivity.extra.eventAdded";
 
@@ -40,6 +44,8 @@ public class NewEventActivity extends AFStopScanActivity {
 
     FloatingActionButton addNewEventButton;
     ProgressBar addNewEventProgressBar;
+    //EditText dateEditText;
+    TextView dateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +66,20 @@ public class NewEventActivity extends AFStopScanActivity {
         clientTextView.setText(trainingInfo.getClientName());
         TextView trainingTextView = findViewById(R.id.trainingTextView);
         trainingTextView.setText(trainingInfo.getTrainingName());
-        TextView dateTextView = findViewById(R.id.dateTextView);
+
+        dateTextView = findViewById(R.id.dateTextView);
+        dateTextView.setLongClickable(true);
+        dateTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(NewEventActivity.this, NewEventActivity.this, startDate.getHours(), startDate.getMinutes(), true);
+                timePickerDialog.show();
+                return true;
+            }
+        });
         startDate = CalendarSupport.getStartOfHour(time.getTime());
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-        dateTextView.setText(simpleDateFormat.format(startDate));
+        updateDateView();
+
     }
 
     public void addEvent(View view) {
@@ -71,6 +87,13 @@ public class NewEventActivity extends AFStopScanActivity {
         AFApplication application =  (AFApplication) getApplication();
         Trainer trainer = application.getTrainer();
         boolean trainingPaid = trainingInfo.getBalance() > 0;
+
+        /*try {
+            startDate = new SimpleDateFormat().parse(dateEditText.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }*/
+
         String subscriptionId = subscription==null?null:subscription.getUid();
         ServiceApiStringRequest request = new ServiceApiStringRequest(Request.Method.POST, ApiUrlBuilder.getNewEventUrl(trainer.getUid(), trainingInfo.getClientUid(), trainingInfo.getTrainingUid(), Converter.dateToString1C(startDate), trainingPaid, subscriptionId),
                 new Response.Listener<String>() {
@@ -104,5 +127,17 @@ public class NewEventActivity extends AFStopScanActivity {
             addNewEventButton.setAlpha((float) 1);
         }
         addNewEventButton.setClickable(!state);
+    }
+
+    private void updateDateView(){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        dateTextView.setText(simpleDateFormat.format(startDate));
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        startDate.setHours(hourOfDay);
+        startDate.setMinutes(minute);
+        updateDateView();
     }
 }
