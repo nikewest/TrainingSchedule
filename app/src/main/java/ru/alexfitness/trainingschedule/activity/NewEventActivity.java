@@ -72,7 +72,7 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
         dateTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                TimePickerDialog timePickerDialog = new TimePickerDialog(NewEventActivity.this, NewEventActivity.this, startDate.getHours(), startDate.getMinutes(), true);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(NewEventActivity.this, android.R.style.Theme_Holo_Dialog, NewEventActivity.this, startDate.getHours(), startDate.getMinutes(), true);
                 timePickerDialog.show();
                 return true;
             }
