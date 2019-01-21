@@ -94,6 +94,8 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setEnableAuthEndTimeOut(false);
+
         setContentView(R.layout.activity_authentication);
 
         setSupportActionBar((android.support.v7.widget.Toolbar) findViewById(R.id.auth_toolbar));

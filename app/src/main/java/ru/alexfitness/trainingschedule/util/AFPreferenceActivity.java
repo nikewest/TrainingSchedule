@@ -69,22 +69,6 @@ public class AFPreferenceActivity extends PreferenceActivity {
     }
 
     @Override
-    public void startActivity(Intent intent) {
-        if(enableAuthEndTimeOut) {
-            stopTimer();
-        }
-        super.startActivity(intent);
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        if(enableAuthEndTimeOut) {
-            stopTimer();
-        }
-        super.startActivityForResult(intent, requestCode);
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
     }
@@ -133,17 +117,17 @@ public class AFPreferenceActivity extends PreferenceActivity {
         }
     }
 
-    private void startNfcScan() {
+    public void startNfcScan() {
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if(nfcAdapter!=null) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,0, new Intent(this, this.getClass()), 0);
+        if (nfcAdapter != null) {
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, this.getClass()), 0);
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
     }
 
-    private void stopNfcScan(){
+    public void stopNfcScan(){
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if(nfcAdapter!=null) {
+        if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(this);
         }
     }
@@ -155,5 +139,13 @@ public class AFPreferenceActivity extends PreferenceActivity {
     private void resetHandler(){
         userInteractionHandler.removeCallbacks(goToAuthHandler);
         userInteractionHandler.postDelayed(goToAuthHandler, authEndTimeOut);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(enableAuthEndTimeOut){
+            stopTimer();
+        }
+        super.onDestroy();
     }
 }

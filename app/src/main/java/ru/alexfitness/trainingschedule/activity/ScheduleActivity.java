@@ -70,7 +70,7 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnableAuthEndTimeOut(false);
+
         setContentView(R.layout.activity_schedule);
 
         Intent intent = getIntent();

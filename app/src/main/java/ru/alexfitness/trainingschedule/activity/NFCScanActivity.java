@@ -79,27 +79,17 @@ public class NFCScanActivity extends AFStopScanActivity {
         }
     }
 
-    /*@Override
-    protected void onResume() {
-        super.onResume();
-        startNfcScan();
-    }
-
     @Override
-    protected void onPause() {
-        super.onPause();
-        stopNfcScan();
-    }
-
-    private void startNfcScan() {
+    public void startNfcScan() {
         if(nfcAdapter!=null) {
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListArray);
         }
     }
 
-    private void stopNfcScan(){
+    @Override
+    public void stopNfcScan(){
         if(nfcAdapter!=null) {
             nfcAdapter.disableForegroundDispatch(this);
         }
-    }*/
+    }
 }

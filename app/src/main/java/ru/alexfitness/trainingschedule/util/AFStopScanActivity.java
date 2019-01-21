@@ -40,6 +40,7 @@ public class AFStopScanActivity extends Activity {
     }
 
     public void stopTimer(){
+        //Log.i("AUTH_END", "STOP TIMER" + this.getClass().getName());
         if(closeTimer!=null){
             if(closeTimer.isAlive()){
                 closeTimer.interrupt();
@@ -54,6 +55,7 @@ public class AFStopScanActivity extends Activity {
     }
 
     public void startTimer(){
+        //Log.i("AUTH_END", "START TIMER" + this.getClass().getName());
         closeTimer = new Thread(){
             @Override
             public void run() {
@@ -66,22 +68,6 @@ public class AFStopScanActivity extends Activity {
             }
         };
         closeTimer.start();
-    }
-
-    @Override
-    public void startActivity(Intent intent) {
-        if(enableAuthEndTimeOut) {
-            stopTimer();
-        }
-        super.startActivity(intent);
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        if(enableAuthEndTimeOut) {
-            stopTimer();
-        }
-        super.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -108,6 +94,7 @@ public class AFStopScanActivity extends Activity {
         if(enableAuthEndTimeOut) {
             stopTimer();
             resetHandler();
+            //Log.i("AUTH_END", timeExpired.toString());
             if (timeExpired.get()) {
                 Intent intent = new Intent(AFStopScanActivity.this, AuthenticationActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -134,17 +121,17 @@ public class AFStopScanActivity extends Activity {
         }
     }
 
-    private void startNfcScan() {
+    public void startNfcScan() {
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if(nfcAdapter!=null) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,0, new Intent(this, this.getClass()), 0);
+        if (nfcAdapter != null) {
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, this.getClass()), 0);
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
     }
 
-    private void stopNfcScan(){
+    public void stopNfcScan(){
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if(nfcAdapter!=null) {
+        if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(this);
         }
     }
@@ -156,5 +143,13 @@ public class AFStopScanActivity extends Activity {
     private void resetHandler(){
         userInteractionHandler.removeCallbacks(goToAuthHandler);
         userInteractionHandler.postDelayed(goToAuthHandler, authEndTimeOut);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(enableAuthEndTimeOut){
+            stopTimer();
+        }
+        super.onDestroy();
     }
 }
