@@ -22,6 +22,7 @@ import android.widget.Toolbar;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -203,7 +204,9 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                                         new Response.ErrorListener() {
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
-                                                //TODO handle response error
+                                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
+                                                dialogBuilder.setMessage(new String(error.networkResponse.data));
+                                                dialogBuilder.show();
                                                 Toast.makeText(ScheduleActivity.this, R.string.cant_edit, Toast.LENGTH_LONG).show();
                                                 setWaitingState(false);
                                             }
@@ -297,7 +300,9 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                //TODO handle response error
+                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
+                                dialogBuilder.setMessage(new String(error.networkResponse.data));
+                                dialogBuilder.show();
                                 Toast.makeText(ScheduleActivity.this, R.string.cant_write_off, Toast.LENGTH_LONG).show();
                                 setWaitingState(false);
                             }
@@ -371,6 +376,9 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
+                        dialogBuilder.setMessage(new String(error.networkResponse.data));
+                        dialogBuilder.show();
                         setWaitingState(false);
                         Toast.makeText(ScheduleActivity.this, R.string.cant_load_events, Toast.LENGTH_LONG).show();
                     }
@@ -409,7 +417,9 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //TODO handle response error
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
+                        dialogBuilder.setMessage(new String(error.networkResponse.data));
+                        dialogBuilder.show();
                         Toast.makeText(ScheduleActivity.this, R.string.cant_cancel, Toast.LENGTH_LONG).show();
                         setWaitingState(false);
                     }
