@@ -30,4 +30,6 @@ public class AFApplication extends Application {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPreferences.getString(getString(R.string.pref_service_address_key), "");
     }
+
+
 }

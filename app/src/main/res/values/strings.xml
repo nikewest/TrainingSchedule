@@ -31,13 +31,15 @@
     <string name="cant_load_events">Can not load events</string>
     <string name="error_load_card_info">Can\'t read card info from server</string>
     <string name="pref_schedule_time_step_hint">minutes</string>
-    <string name="pref_schedule_time_step_key" translatable="false">pref_schedule_time_step_key</string>
+    <string name="pref_schedule_time_step_key" translatable="false">pref_schedule_time_step</string>
     <string name="pref_schedule_time_step_title">Schedule time step</string>
     <string name="toast_msg_edit_pref_schedule_time_step">must be a divider of 60</string>
-    <string name="pref_auth_timeout_key" translatable="false">pref_auth_timeout_key</string>
+    <string name="pref_auth_timeout_key" translatable="false">pref_auth_timeout</string>
     <string name="pref_auth_timeout_title">Authorization end timeout</string>
     <string name="pref_auth_timeout_hint">idle time after which the authorization will be reset (sec.)</string>
     <string name="settings_pwd_dialog_message">Enter admin password</string>
     <string name="wrong_admin_pwd">WRONG ADMIN PWD!</string>
+    <string name="pref_version_key" translatable="false">pref_version</string>
+    <string name="pref_version_title">Version</string>
 
 </resources>

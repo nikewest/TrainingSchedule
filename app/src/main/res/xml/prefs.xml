@@ -22,4 +22,9 @@
         android:numeric="decimal"
         android:defaultValue="30"/>
 
+    <Preference
+        android:key="@string/pref_version_key"
+        android:title="@string/pref_version_title" />
+
+
 </PreferenceScreen>

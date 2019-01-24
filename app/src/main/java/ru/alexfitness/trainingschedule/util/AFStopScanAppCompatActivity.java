@@ -40,7 +40,7 @@ public class AFStopScanAppCompatActivity extends AppCompatActivity {
     }
 
     public void stopTimer(){
-        //Log.i("AUTH_END", "STOP TIMER" + this.getClass().getName());
+        Log.i("AUTH_END", "STOP TIMER" + this.getClass().getName());
         if (closeTimer != null) {
             if (closeTimer.isAlive()) {
                 closeTimer.interrupt();
@@ -55,7 +55,7 @@ public class AFStopScanAppCompatActivity extends AppCompatActivity {
     }
 
     public void startTimer(){
-        //Log.i("AUTH_END", "START TIMER" + this.getClass().getName());
+        Log.i("AUTH_END", "START TIMER" + this.getClass().getName());
         closeTimer = new Thread() {
             @Override
             public void run() {
@@ -81,6 +81,7 @@ public class AFStopScanAppCompatActivity extends AppCompatActivity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         try {
             authEndTimeOut = Integer.parseInt(sp.getString(getString(R.string.pref_auth_timeout_key), "30")) * 1000;
+            Log.i("AUTH_END", String.valueOf(authEndTimeOut));
         } catch (Exception ex){
             setEnableAuthEndTimeOut(false);
         }
@@ -93,7 +94,7 @@ public class AFStopScanAppCompatActivity extends AppCompatActivity {
         if(enableAuthEndTimeOut) {
             stopTimer();
             resetHandler();
-            //Log.i("AUTH_END", timeExpired.toString());
+            Log.i("AUTH_END", timeExpired.toString());
             if (timeExpired.get()) {
                 Intent intent = new Intent(AFStopScanAppCompatActivity.this, AuthenticationActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
