@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ru.alexfitness.trainingschedule.R;
@@ -64,18 +65,20 @@ public class AFStopScanActivity extends Activity {
     }
 
     public void startTimer(){
-        Log.i("AUTH_END", "START TIMER" + this.getClass().getName());
-        closeTimer = new Thread(){
+        Log.i("AUTH_END", "START TIMER" + this.getClass().getName() + " " +  Calendar.getInstance().getTime().toString());
+        closeTimer = new Thread() {
             @Override
             public void run() {
                 try {
                     sleep(authEndTimeOut);
                     timeExpired.set(true);
+                    Log.i("AUTH_END", "Background timer have expired!");
                     if(wakeLock!=null && wakeLock.isHeld()){
                         wakeLock.release();
+                        Log.i("AUTH_END", "wake lock realease");
                     }
                 } catch (InterruptedException e) {
-                    Log.e(null, e.toString());
+                    Log.e("AUTH_END_TIMER", e.toString());
                 }
             }
         };
@@ -83,6 +86,7 @@ public class AFStopScanActivity extends Activity {
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getLocalClassName());
         wakeLock.acquire();
+        Log.i("AUTH_END", "wake lock acquire");
     }
 
     @Override

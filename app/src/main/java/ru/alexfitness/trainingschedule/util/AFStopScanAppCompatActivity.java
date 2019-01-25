@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ru.alexfitness.trainingschedule.R;
@@ -35,6 +37,8 @@ public class AFStopScanAppCompatActivity extends AppCompatActivity {
         }
     };
 
+    PowerManager.WakeLock wakeLock;
+
     public void setEnableAuthEndTimeOut(boolean value){
         enableAuthEndTimeOut = value;
     }
@@ -52,22 +56,35 @@ public class AFStopScanAppCompatActivity extends AppCompatActivity {
             }
             closeTimer = null;
         }
+        if(wakeLock!=null && wakeLock.isHeld()){
+            wakeLock.release();
+        }
+        wakeLock = null;
     }
 
     public void startTimer(){
-        Log.i("AUTH_END", "START TIMER" + this.getClass().getName());
+        Log.i("AUTH_END", "START TIMER" + this.getClass().getName() + " " +  Calendar.getInstance());
         closeTimer = new Thread() {
             @Override
             public void run() {
                 try {
                     sleep(authEndTimeOut);
                     timeExpired.set(true);
+                    Log.i("AUTH_END", "Background timer have expired!");
+                    if(wakeLock!=null && wakeLock.isHeld()){
+                        wakeLock.release();
+                        Log.i("AUTH_END", "wake lock realease");
+                    }
                 } catch (InterruptedException e) {
                     Log.e(null, e.toString());
                 }
             }
         };
         closeTimer.start();
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getLocalClassName());
+        wakeLock.acquire();
+        Log.i("AUTH_END", "wake lock acquire");
     }
 
     @Override
