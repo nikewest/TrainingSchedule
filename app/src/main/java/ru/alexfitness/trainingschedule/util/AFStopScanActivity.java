@@ -69,8 +69,8 @@ public class AFStopScanActivity extends Activity {
         stopNfcScan();
         if(enableAuthEndTimeOut) {
             stopHandler();
-            setPauseAuthEnd();
         }
+        setPauseAuthEnd();
     }
 
     @Override
