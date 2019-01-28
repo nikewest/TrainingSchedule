@@ -23,19 +23,26 @@ import ru.alexfitness.trainingschedule.activity.AuthenticationActivity;
 public class AFStopScanActivity extends Activity {
 
     //private final long CLOSE_TIMEOUT = 30 * 1000;
-    private AtomicBoolean timeExpired = new AtomicBoolean(false);
+    //private AtomicBoolean timeExpired = new AtomicBoolean(false);
     private Thread closeTimer = null;
 
     private int authEndTimeOut;
     private boolean enableAuthEndTimeOut = true;
 
-    private Handler userInteractionHandler = new Handler();
-    private Runnable goToAuthHandler = new Runnable() {
+    //private Handler userInteractionHandler = new Handler();
+    private Handler authHandler = new Handler();
+
+    private Runnable authEnder = new Runnable() {
         @Override
         public void run() {
             Intent intent = new Intent(AFStopScanActivity.this, AuthenticationActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            if(wakeLock!=null){
+                if(wakeLock.isHeld()){
+                    wakeLock.release();
+                }
+            }
         }
     };
 
@@ -45,6 +52,7 @@ public class AFStopScanActivity extends Activity {
         enableAuthEndTimeOut = value;
     }
 
+    /*
     public void stopTimer(){
         Log.i("AUTH_END", "STOP TIMER" + this.getClass().getName());
         if(closeTimer!=null){
@@ -62,9 +70,9 @@ public class AFStopScanActivity extends Activity {
             wakeLock.release();
             wakeLock = null;
         }
-    }
+    }*/
 
-    public void startTimer(){
+    /*public void startTimer(){
         Log.i("AUTH_END", "START TIMER" + this.getClass().getName() + " " +  Calendar.getInstance().getTime().toString());
         closeTimer = new Thread() {
             @Override
@@ -83,10 +91,30 @@ public class AFStopScanActivity extends Activity {
             }
         };
         closeTimer.start();
-        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager pm = (PowerManager) this.getSystemService(POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getLocalClassName());
-        wakeLock.acquire();
+        wakeLock.acquire(120000);
         Log.i("AUTH_END", "wake lock acquire");
+    }*/
+
+    private void startTimer(){
+        authHandler.removeCallbacks(authEnder);
+        authHandler.postDelayed(authEnder, authEndTimeOut);
+
+        PowerManager pm = (PowerManager) this.getSystemService(POWER_SERVICE);
+        if (pm != null) {
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getLocalClassName());
+            wakeLock.acquire(authEndTimeOut + 60 * 1000);
+        }
+    }
+
+    private void stopTimer(){
+        authHandler.removeCallbacks(authEnder);
+        if(wakeLock!=null){
+            if(wakeLock.isHeld()){
+                wakeLock.release();
+            }
+        }
     }
 
     @Override
@@ -114,12 +142,6 @@ public class AFStopScanActivity extends Activity {
         if(enableAuthEndTimeOut) {
             stopTimer();
             resetHandler();
-            Log.i("AUTH_END", timeExpired.toString());
-            if (timeExpired.get()) {
-                Intent intent = new Intent(AFStopScanActivity.this, AuthenticationActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
         }
     }
 
@@ -157,12 +179,12 @@ public class AFStopScanActivity extends Activity {
     }
 
     private void stopHandler(){
-        userInteractionHandler.removeCallbacks(goToAuthHandler);
+        authHandler.removeCallbacks(authEnder);
     }
 
     private void resetHandler(){
-        userInteractionHandler.removeCallbacks(goToAuthHandler);
-        userInteractionHandler.postDelayed(goToAuthHandler, authEndTimeOut);
+        authHandler.removeCallbacks(authEnder);
+        authHandler.postDelayed(authEnder, authEndTimeOut);
     }
 
     @Override
