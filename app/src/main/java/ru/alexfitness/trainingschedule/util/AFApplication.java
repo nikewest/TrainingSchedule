@@ -11,11 +11,20 @@ import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 public class AFApplication extends Application {
 
     private Trainer trainer;
+    private long pauseTimeStamp = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         ApiUrlBuilder.setHostUrl(getServiceAddressFromPreferences());
+    }
+
+    public long getPauseTimeStamp() {
+        return pauseTimeStamp;
+    }
+
+    public void setPauseTimeStamp(long pauseTimeStamp) {
+        this.pauseTimeStamp = pauseTimeStamp;
     }
 
     public Trainer getTrainer() {
