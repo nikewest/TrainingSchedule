@@ -7,6 +7,7 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -19,99 +20,21 @@ import ru.alexfitness.trainingschedule.activity.AuthenticationActivity;
 
 public class AFPreferenceActivity extends PreferenceActivity {
 
-    //private final long CLOSE_TIMEOUT = 30 * 1000;
-    //private AtomicBoolean timeExpired = new AtomicBoolean(false);
-    private Thread closeTimer = null;
-
     private int authEndTimeOut;
     private boolean enableAuthEndTimeOut = true;
-
-    //private Handler userInteractionHandler = new Handler();
     private Handler authHandler = new Handler();
-
     private Runnable authEnder = new Runnable() {
         @Override
         public void run() {
             Intent intent = new Intent(AFPreferenceActivity.this, AuthenticationActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            if(wakeLock!=null){
-                if(wakeLock.isHeld()){
-                    wakeLock.release();
-                }
-            }
         }
     };
-
-    PowerManager.WakeLock wakeLock;
+    private AFApplication app;
 
     public void setEnableAuthEndTimeOut(boolean value){
         enableAuthEndTimeOut = value;
-    }
-
-    /*
-    public void stopTimer(){
-        Log.i("AUTH_END", "STOP TIMER" + this.getClass().getName());
-        if(closeTimer!=null){
-            if(closeTimer.isAlive()){
-                closeTimer.interrupt();
-                try {
-                    closeTimer.join();
-                } catch (InterruptedException e) {
-                    Log.e(null, e.toString());
-                }
-            }
-            closeTimer = null;
-        }
-        if(wakeLock!=null && wakeLock.isHeld()){
-            wakeLock.release();
-            wakeLock = null;
-        }
-    }*/
-
-    /*public void startTimer(){
-        Log.i("AUTH_END", "START TIMER" + this.getClass().getName() + " " +  Calendar.getInstance().getTime().toString());
-        closeTimer = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(authEndTimeOut);
-                    timeExpired.set(true);
-                    Log.i("AUTH_END", "Background timer have expired!");
-                    if(wakeLock!=null && wakeLock.isHeld()){
-                        wakeLock.release();
-                        Log.i("AUTH_END", "wake lock realease");
-                    }
-                } catch (InterruptedException e) {
-                    Log.e("AUTH_END_TIMER", e.toString());
-                }
-            }
-        };
-        closeTimer.start();
-        PowerManager pm = (PowerManager) this.getSystemService(POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getLocalClassName());
-        wakeLock.acquire(120000);
-        Log.i("AUTH_END", "wake lock acquire");
-    }*/
-
-    private void startTimer(){
-        authHandler.removeCallbacks(authEnder);
-        authHandler.postDelayed(authEnder, authEndTimeOut);
-
-        PowerManager pm = (PowerManager) this.getSystemService(POWER_SERVICE);
-        if (pm != null) {
-            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getLocalClassName());
-            wakeLock.acquire(authEndTimeOut + 60 * 1000);
-        }
-    }
-
-    private void stopTimer(){
-        authHandler.removeCallbacks(authEnder);
-        if(wakeLock!=null){
-            if(wakeLock.isHeld()){
-                wakeLock.release();
-            }
-        }
     }
 
     @Override
@@ -122,6 +45,8 @@ public class AFPreferenceActivity extends PreferenceActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        app = (AFApplication) getApplication();
+        app.setPauseTimeStamp(SystemClock.elapsedRealtime());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         try {
             authEndTimeOut = Integer.parseInt(sp.getString(getString(R.string.pref_auth_timeout_key), "30")) * 1000;
@@ -137,8 +62,8 @@ public class AFPreferenceActivity extends PreferenceActivity {
         super.onResume();
         startNfcScan();
         if(enableAuthEndTimeOut) {
-            stopTimer();
             resetHandler();
+            checkPauseAuthEnd();
         }
     }
 
@@ -148,7 +73,7 @@ public class AFPreferenceActivity extends PreferenceActivity {
         stopNfcScan();
         if(enableAuthEndTimeOut) {
             stopHandler();
-            startTimer();
+            setPauseAuthEnd();
         }
     }
 
@@ -158,6 +83,22 @@ public class AFPreferenceActivity extends PreferenceActivity {
         if(enableAuthEndTimeOut) {
             resetHandler();
         }
+    }
+
+    private void checkPauseAuthEnd(){
+        if((SystemClock.elapsedRealtime() - app.getPauseTimeStamp()) > authEndTimeOut){
+            endAuth();
+        }
+    }
+
+    private void setPauseAuthEnd(){
+        app.setPauseTimeStamp(SystemClock.elapsedRealtime());
+    }
+
+    private void endAuth(){
+        Intent intent = new Intent(this, AuthenticationActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     public void startNfcScan() {
@@ -182,13 +123,5 @@ public class AFPreferenceActivity extends PreferenceActivity {
     private void resetHandler(){
         authHandler.removeCallbacks(authEnder);
         authHandler.postDelayed(authEnder, authEndTimeOut);
-    }
-
-    @Override
-    protected void onDestroy() {
-        if(enableAuthEndTimeOut){
-            stopTimer();
-        }
-        super.onDestroy();
     }
 }
