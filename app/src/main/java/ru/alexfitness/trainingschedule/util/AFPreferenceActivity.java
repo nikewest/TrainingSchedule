@@ -6,14 +6,11 @@ import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.activity.AuthenticationActivity;
