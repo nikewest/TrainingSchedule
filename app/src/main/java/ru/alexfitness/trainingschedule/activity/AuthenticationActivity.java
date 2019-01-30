@@ -79,6 +79,9 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(AuthenticationActivity.this);
+                                    dialogBuilder.setMessage(new String(error.networkResponse.data));
+                                    dialogBuilder.show();
                                     Log.e(getString(R.string.util_tag), error.toString());
                                     Toast.makeText(AuthenticationActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
                                     enableLogin(true);

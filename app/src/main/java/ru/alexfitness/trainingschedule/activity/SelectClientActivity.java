@@ -1,6 +1,7 @@
 package ru.alexfitness.trainingschedule.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -107,6 +108,9 @@ public class SelectClientActivity extends AFStopScanActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SelectClientActivity.this);
+                        dialogBuilder.setMessage(new String(error.networkResponse.data));
+                        dialogBuilder.show();
                         Log.e(null, error.toString());
                         finish();
                     }

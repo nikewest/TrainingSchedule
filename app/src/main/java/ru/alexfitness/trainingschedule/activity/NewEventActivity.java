@@ -2,6 +2,7 @@ package ru.alexfitness.trainingschedule.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -105,6 +106,9 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NewEventActivity.this);
+                        dialogBuilder.setMessage(new String(error.networkResponse.data));
+                        dialogBuilder.show();
                         finishWithResult(false);
                     }
                 });
