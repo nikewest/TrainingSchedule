@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +46,7 @@ import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.AFWeekViewEventFactory;
 import ru.alexfitness.trainingschedule.util.CalendarSupport;
 import ru.alexfitness.trainingschedule.util.Converter;
+import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.EventDragShadowBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
 import ru.alexfitness.trainingschedule.util.ServiceApiStringRequest;
@@ -298,9 +300,7 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
-                                dialogBuilder.setMessage(new String(error.networkResponse.data));
-                                dialogBuilder.show();
+                                ErrorDialogBuilder.showDialog(ScheduleActivity.this, error, null);
                                 Toast.makeText(ScheduleActivity.this, R.string.cant_write_off, Toast.LENGTH_LONG).show();
                                 setWaitingState(false);
                             }
@@ -374,9 +374,7 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
-                        dialogBuilder.setMessage(new String(error.networkResponse.data));
-                        dialogBuilder.show();
+                        ErrorDialogBuilder.showDialog(ScheduleActivity.this, error, null);
                         setWaitingState(false);
                         Toast.makeText(ScheduleActivity.this, R.string.cant_load_events, Toast.LENGTH_LONG).show();
                     }
@@ -415,9 +413,7 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScheduleActivity.this);
-                        dialogBuilder.setMessage(new String(error.networkResponse.data));
-                        dialogBuilder.show();
+                        ErrorDialogBuilder.showDialog(ScheduleActivity.this, error, null);
                         Toast.makeText(ScheduleActivity.this, R.string.cant_cancel, Toast.LENGTH_LONG).show();
                         setWaitingState(false);
                     }

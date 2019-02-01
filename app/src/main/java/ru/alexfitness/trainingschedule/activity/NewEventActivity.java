@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import java.net.ConnectException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +31,7 @@ import ru.alexfitness.trainingschedule.util.AFApplication;
 import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.CalendarSupport;
 import ru.alexfitness.trainingschedule.util.Converter;
+import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiStringRequest;
 
 public class NewEventActivity extends AFStopScanActivity implements TimePickerDialog.OnTimeSetListener {
@@ -105,15 +107,12 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NewEventActivity.this);
-                        dialogBuilder.setMessage(new String(error.networkResponse.data));
-                        dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        ErrorDialogBuilder.showDialog(NewEventActivity.this, error, new DialogInterface.OnDismissListener() {
                             @Override
                             public void onDismiss(DialogInterface dialog) {
                                 finishWithResult(false);
                             }
                         });
-                        dialogBuilder.show();
                     }
                 });
         Volley.newRequestQueue(NewEventActivity.this).add(request);

@@ -33,6 +33,7 @@ import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 
 import ru.alexfitness.trainingschedule.util.AFStopScanAppCompatActivity;
+import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonObjectRequest;
 
 public class AuthenticationActivity extends AFStopScanAppCompatActivity {
@@ -81,21 +82,12 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    String errorText = null;
-                                    if(error.getCause() instanceof ConnectException){
-                                        errorText = getString(R.string.cant_connect_to_server);
-                                    } else if (error.networkResponse!=null){
-                                        errorText = new String(error.networkResponse.data);
-                                    }
-                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(AuthenticationActivity.this);
-                                    dialogBuilder.setMessage(errorText);
-                                    dialogBuilder.show();
+                                    ErrorDialogBuilder.showDialog(AuthenticationActivity.this, error, null);
                                     Log.e(getString(R.string.util_tag), error.toString());
                                     Toast.makeText(AuthenticationActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
                                     enableLogin(true);
                                 }
                             });
-                    //serviceApiRequest.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 0, 1.0f));
                     getRequestQueue().add(serviceApiRequest);
                 } else {
                     Toast.makeText(this, R.string.no_internet, Toast.LENGTH_LONG).show();
@@ -161,7 +153,7 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
                 final AlertDialog.Builder dialogBuider = new AlertDialog.Builder(this);
                 LayoutInflater layoutInflater = getLayoutInflater();
                 View dialogView = layoutInflater.inflate(R.layout.dialog_settings_pwd, null);
-                final EditText pwdEditText = (EditText) dialogView.findViewById(R.id.settingPwdEditText);
+                final EditText pwdEditText = dialogView.findViewById(R.id.settingPwdEditText);
                 dialogBuider.setView(dialogView);
                 dialogBuider.setMessage(R.string.settings_pwd_dialog_message);
                 dialogBuider.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

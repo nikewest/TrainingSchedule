@@ -1,6 +1,7 @@
 package ru.alexfitness.trainingschedule.activity;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -33,6 +35,7 @@ import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 import ru.alexfitness.trainingschedule.util.AFApplication;
 import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
+import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
 
 public class SelectClientActivity extends AFStopScanActivity {
@@ -107,11 +110,13 @@ public class SelectClientActivity extends AFStopScanActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SelectClientActivity.this);
-                        dialogBuilder.setMessage(new String(error.networkResponse.data));
-                        dialogBuilder.show();
+                        ErrorDialogBuilder.showDialog(SelectClientActivity.this, error, new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                finish();
+                            }
+                        });
                         Log.e(null, error.toString());
-                        finish();
                     }
                 });
         Volley.newRequestQueue(this).add(jsonArrayRequest);

@@ -1,6 +1,7 @@
 package ru.alexfitness.trainingschedule.activity;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -30,6 +32,7 @@ import ru.alexfitness.trainingschedule.model.Subscription;
 import ru.alexfitness.trainingschedule.model.TrainingsBalance;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
+import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonObjectRequest;
 
@@ -78,8 +81,13 @@ public class SelectSubscriptionActivity extends AFStopScanActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        ErrorDialogBuilder.showDialog(SelectSubscriptionActivity.this, error, new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                finish();
+                            }
+                        });
                         Log.e(null, error.toString());
-                        finish();
                     }
                 });
         Volley.newRequestQueue(this).add(jsonArrayRequest);
@@ -134,9 +142,7 @@ public class SelectSubscriptionActivity extends AFStopScanActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SelectSubscriptionActivity.this);
-                                dialogBuilder.setMessage(new String(error.networkResponse.data));
-                                dialogBuilder.show();
+                                ErrorDialogBuilder.showDialog(SelectSubscriptionActivity.this, error, null);
                                 Log.e(null, error.toString());
                                 //Toast.makeText(SelectSubscriptionActivity.this, R.string.error_load_card_info, Toast.LENGTH_LONG).show();
                                 setWaitingState(false);
