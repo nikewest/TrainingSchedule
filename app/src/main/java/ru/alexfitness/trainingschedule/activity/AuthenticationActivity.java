@@ -26,6 +26,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+
 import ru.alexfitness.trainingschedule.model.Trainer;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
@@ -79,8 +81,14 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+                                    String errorText = null;
+                                    if(error.getCause() instanceof ConnectException){
+                                        errorText = getString(R.string.cant_connect_to_server);
+                                    } else if (error.networkResponse!=null){
+                                        errorText = new String(error.networkResponse.data);
+                                    }
                                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(AuthenticationActivity.this);
-                                    dialogBuilder.setMessage(new String(error.networkResponse.data));
+                                    dialogBuilder.setMessage(errorText);
                                     dialogBuilder.show();
                                     Log.e(getString(R.string.util_tag), error.toString());
                                     Toast.makeText(AuthenticationActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();

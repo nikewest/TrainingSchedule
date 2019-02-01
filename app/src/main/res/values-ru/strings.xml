@@ -37,4 +37,5 @@
     <string name="settings_pwd_dialog_message">Пароль администратора</string>
     <string name="wrong_admin_pwd">ПАРОЛЬ НЕВЕРНЫЙ!</string>
     <string name="pref_version_title">Версия</string>
+    <string name="cant_connect_to_server">Не удается подключиться к серверу!</string>
 </resources>
