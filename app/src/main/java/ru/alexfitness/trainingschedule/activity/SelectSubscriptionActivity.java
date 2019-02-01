@@ -1,6 +1,5 @@
 package ru.alexfitness.trainingschedule.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -72,7 +71,7 @@ public class SelectSubscriptionActivity extends AFStopScanActivity {
                                     Log.e(null, e.getMessage());
                                 }
                             }
-                        ArrayAdapter<Subscription> adapter = new ArrayAdapter<Subscription>(SelectSubscriptionActivity.this, android.R.layout.simple_list_item_1, subscriptionsArrayList);
+                        ArrayAdapter<Subscription> adapter = new ArrayAdapter<>(SelectSubscriptionActivity.this, android.R.layout.simple_list_item_1, subscriptionsArrayList);
                         trainingsListView.setAdapter(adapter);
                     }
                 },
@@ -123,8 +122,11 @@ public class SelectSubscriptionActivity extends AFStopScanActivity {
                                     startActivity(intent);
                                     finish();
                                 } catch (JSONException e) {
+                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SelectSubscriptionActivity.this);
+                                    dialogBuilder.setMessage(e.getMessage());
+                                    dialogBuilder.show();
                                     Log.e(null, e.getMessage());
-                                    Toast.makeText(SelectSubscriptionActivity.this, R.string.error_load_card_info, Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(SelectSubscriptionActivity.this, R.string.error_load_card_info, Toast.LENGTH_LONG).show();
                                     setWaitingState(false);
                                 }
                             }
@@ -136,7 +138,7 @@ public class SelectSubscriptionActivity extends AFStopScanActivity {
                                 dialogBuilder.setMessage(new String(error.networkResponse.data));
                                 dialogBuilder.show();
                                 Log.e(null, error.toString());
-                                Toast.makeText(SelectSubscriptionActivity.this, R.string.error_load_card_info, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(SelectSubscriptionActivity.this, R.string.error_load_card_info, Toast.LENGTH_LONG).show();
                                 setWaitingState(false);
                             }
                         });

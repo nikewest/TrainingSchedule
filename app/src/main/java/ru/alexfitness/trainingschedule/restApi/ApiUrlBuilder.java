@@ -2,10 +2,9 @@ package ru.alexfitness.trainingschedule.restApi;
 
 import java.util.Date;
 
-import ru.alexfitness.trainingschedule.model.Subscription;
 import ru.alexfitness.trainingschedule.util.Converter;
 
-public class ApiUrlBuilder {
+public final class ApiUrlBuilder {
 
     private static String hostUrl;
     private final static String SERVICE_URL = "hs/TrainerScheduleApi/";
@@ -17,43 +16,43 @@ public class ApiUrlBuilder {
         return hostUrl + SERVICE_URL;
     }
 
-    public final static String getLoginUrl(String cardHexCode){
+    public static String getLoginUrl(String cardHexCode){
         return getServiceUrl() + "Login/" + cardHexCode;
     }
 
-    private final static String getEventsUrl(){
+    private static String getEventsUrl(){
         return getServiceUrl() + "Events";
     }
 
-    public final static String getEventsByTrainerUrl(String trainerUID, Date beginDate, Date endDate){
+    public static String getEventsByTrainerUrl(String trainerUID, Date beginDate, Date endDate){
         return getEventsUrl() + "?trainerUid=" + trainerUID + "&startDate=" + Converter.dateToString1C(beginDate) + "&endDate=" + Converter.dateToString1C(endDate);
     }
 
-    public final static String getEventUrl(String eventId){
+    public static String getEventUrl(String eventId){
         return getServiceUrl() + "Events/" + eventId;
     }
 
-    public final static String getEventEditDatesUrl(String eventId, String startDate, String endDate){
+    public static String getEventEditDatesUrl(String eventId, String startDate, String endDate){
         return getEventUrl(eventId) + "?startDate=" + startDate + "&endDate=" + endDate;
     }
 
-    public final static String getEventWriteOffUrl(String eventId, String cardId){
+    public static String getEventWriteOffUrl(String eventId, String cardId){
         return getServiceUrl() + "WriteOff/" + eventId + "?cardId=" + cardId;
     }
 
-    public final static String getClientsTrainingsUrl(String trainerID){
+    public static String getClientsTrainingsUrl(String trainerID){
         return getServiceUrl() + "ClientsTrainings/" + trainerID;
     }
 
-    public final static String getNewEventUrl(String trainerUid, String clientUid, String trainingUid, String startDate, boolean paid, String subUid){
+    public static String getNewEventUrl(String trainerUid, String clientUid, String trainingUid, String startDate, boolean paid, String subUid){
         return getEventsUrl() + "?trainerUid=" + trainerUid + "&clientUid=" + clientUid + "&startDate=" + startDate + "&paid=" + paid + (paid ? ("&trainingUid=" + trainingUid) : ("&subscriptionUid=" + subUid));
     }
 
-    public final static String getSubscriptionsUrl(){
+    public static String getSubscriptionsUrl(){
         return getServiceUrl() + "Subscriptions";
     }
 
-    public final static String getCardUrl(String cardHexCode){
+    public static String getCardUrl(String cardHexCode){
         return getServiceUrl() + "Cards/" + cardHexCode;
     }
 

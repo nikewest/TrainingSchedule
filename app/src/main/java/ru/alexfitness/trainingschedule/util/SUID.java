@@ -91,7 +91,7 @@ public class SUID {
 
         System.out.println("\n--- duplication test ...");
         long id = 0, ts = System.currentTimeMillis();
-        Set<Long> set = new HashSet<Long>();
+        Set<Long> set = new HashSet<>();
         for (int i = 0; i < 1000000; i++) {
             id = id(i & 1);
             if (!set.add(id))

@@ -35,7 +35,7 @@ public class AFApplication extends Application {
         this.trainer = trainer;
     }
 
-    public String getServiceAddressFromPreferences(){
+    private String getServiceAddressFromPreferences(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPreferences.getString(getString(R.string.pref_service_address_key), "");
     }

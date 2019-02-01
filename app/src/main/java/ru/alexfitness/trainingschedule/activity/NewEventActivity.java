@@ -1,14 +1,13 @@
 package ru.alexfitness.trainingschedule.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -18,7 +17,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,6 +48,7 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
 
@@ -73,7 +72,7 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
         dateTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                TimePickerDialog timePickerDialog = new TimePickerDialog(NewEventActivity.this, android.R.style.Theme_Holo_Dialog, NewEventActivity.this, startDate.getHours(), startDate.getMinutes(), true);
+                @SuppressWarnings("deprecation") TimePickerDialog timePickerDialog = new TimePickerDialog(NewEventActivity.this, android.R.style.Theme_Holo_Dialog, NewEventActivity.this, startDate.getHours(), startDate.getMinutes(), true);
                 timePickerDialog.show();
                 return true;
             }
@@ -109,7 +108,12 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NewEventActivity.this);
                         dialogBuilder.setMessage(new String(error.networkResponse.data));
                         dialogBuilder.show();
-                        finishWithResult(false);
+                        dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                finishWithResult(false);
+                            }
+                        });
                     }
                 });
         Volley.newRequestQueue(NewEventActivity.this).add(request);
@@ -122,7 +126,7 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
         startActivity(intent);
     }
 
-    private void setWaitingState(boolean state){
+    private void setWaitingState(@SuppressWarnings("SameParameterValue") boolean state){
         if(state){
             addNewEventProgressBar.setVisibility(View.VISIBLE);
             addNewEventButton.setAlpha((float) 0.3);
@@ -138,6 +142,7 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
         dateTextView.setText(simpleDateFormat.format(startDate));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         startDate.setHours(hourOfDay);

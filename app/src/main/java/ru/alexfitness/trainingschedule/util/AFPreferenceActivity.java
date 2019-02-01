@@ -35,11 +35,6 @@ public class AFPreferenceActivity extends PreferenceActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-    }
-
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (AFApplication) getApplication();

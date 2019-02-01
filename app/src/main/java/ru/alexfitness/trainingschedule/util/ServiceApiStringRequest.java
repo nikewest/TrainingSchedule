@@ -23,7 +23,7 @@ public class ServiceApiStringRequest extends StringRequest {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        HashMap<String, String> headers = new HashMap<String, String>();
+        HashMap<String, String> headers = new HashMap<>();
         String credentials = USERNAME + ":" + PASSWORD;
         String auth = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
         headers.put("Authorization", auth);
