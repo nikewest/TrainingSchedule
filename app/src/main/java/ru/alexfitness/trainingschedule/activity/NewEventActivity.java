@@ -107,13 +107,13 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
                     public void onErrorResponse(VolleyError error) {
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NewEventActivity.this);
                         dialogBuilder.setMessage(new String(error.networkResponse.data));
-                        dialogBuilder.show();
                         dialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override
                             public void onDismiss(DialogInterface dialog) {
                                 finishWithResult(false);
                             }
                         });
+                        dialogBuilder.show();
                     }
                 });
         Volley.newRequestQueue(NewEventActivity.this).add(request);
@@ -122,8 +122,8 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
     private void finishWithResult(boolean result){
         Intent intent = new Intent(NewEventActivity.this, ScheduleActivity.class);
         intent.putExtra(EVENT_ADDED_EXTRA_KEY, result);
-        finish();
         startActivity(intent);
+        finish();
     }
 
     private void setWaitingState(@SuppressWarnings("SameParameterValue") boolean state){
@@ -135,6 +135,8 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
             addNewEventButton.setAlpha((float) 1);
         }
         addNewEventButton.setClickable(!state);
+        dateTextView.setLongClickable(!state);
+
     }
 
     private void updateDateView(){
