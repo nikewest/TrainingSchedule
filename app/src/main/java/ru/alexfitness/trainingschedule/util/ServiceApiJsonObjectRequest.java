@@ -20,7 +20,7 @@ public class ServiceApiJsonObjectRequest extends JsonObjectRequest {
 
     public ServiceApiJsonObjectRequest(int method, String url, @Nullable JSONObject jsonRequest, Response.Listener<JSONObject> listener, @Nullable Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
-        this.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 0, 1.0f));
+        this.setRetryPolicy(new DefaultRetryPolicy(30 * 1000, 0, 1.0f));
     }
 
     @Override

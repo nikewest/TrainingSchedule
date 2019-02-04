@@ -21,7 +21,7 @@ public class ServiceApiJsonArrayRequest extends JsonArrayRequest {
 
     public ServiceApiJsonArrayRequest(int method, String url, Response.Listener<JSONArray> listener, @Nullable Response.ErrorListener errorListener) {
         super(method, url, null, listener, errorListener);
-        this.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 0, 1.0f));
+        this.setRetryPolicy(new DefaultRetryPolicy(30 * 1000, 0, 1.0f));
     }
 
     @Override

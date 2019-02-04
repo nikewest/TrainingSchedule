@@ -18,7 +18,7 @@ public class ServiceApiStringRequest extends StringRequest {
 
     public ServiceApiStringRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
         super(method, url, listener, errorListener);
-        this.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 0, 1.0f));
+        this.setRetryPolicy(new DefaultRetryPolicy(30 * 1000, 0, 1.0f));
     }
 
     @Override

@@ -318,13 +318,14 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if(intent.hasExtra(NewEventActivity.EVENT_ADDED_EXTRA_KEY)) {
-            boolean eventAdded = intent.getBooleanExtra(NewEventActivity.EVENT_ADDED_EXTRA_KEY, false);
+            /*boolean eventAdded = intent.getBooleanExtra(NewEventActivity.EVENT_ADDED_EXTRA_KEY, false);
             if(eventAdded){
                 Toast.makeText(this, R.string.new_training_added, Toast.LENGTH_LONG).show();
                 weekView.notifyDatasetChanged();
             } else {
                 Toast.makeText(this, R.string.training_not_added, Toast.LENGTH_LONG).show();
-            }
+            }*/
+            weekView.notifyDatasetChanged();
         }
     }
 
