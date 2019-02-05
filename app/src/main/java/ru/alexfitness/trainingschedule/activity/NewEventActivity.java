@@ -107,12 +107,7 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        ErrorDialogBuilder.showDialog(NewEventActivity.this, error, new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                finishWithResult(false);
-                            }
-                        });
+                        ErrorDialogBuilder.showDialog(NewEventActivity.this, error, null);
                     }
                 });
         Volley.newRequestQueue(NewEventActivity.this).add(request);

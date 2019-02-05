@@ -31,7 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -305,7 +304,6 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
                                 setWaitingState(false);
                             }
                         });
-                //stringRequest.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 1, 1.0f));
                 Volley.newRequestQueue(ScheduleActivity.this).add(stringRequest);
             } else {
                 Toast.makeText(this, R.string.nfc_canceled, Toast.LENGTH_LONG).show();
