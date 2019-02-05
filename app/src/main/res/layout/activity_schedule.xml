@@ -39,7 +39,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:noOfVisibleDays="3"
-            app:showNowLine="true" />
+            app:showNowLine="true"/>
 
     </android.support.constraint.ConstraintLayout>
 

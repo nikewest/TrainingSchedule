@@ -6,6 +6,7 @@ import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -88,8 +89,9 @@ public class ScheduleActivity extends AFStopScanActivity implements MonthLoader.
         progressbar = findViewById(R.id.scheduleProgressBar);
 
         weekView = findViewById(R.id.weekView);
-        weekView.setMonthChangeListener(this);
         weekView.setEventCornerRadius(5);
+
+        weekView.setMonthChangeListener(this);
         weekView.setOnEventClickListener(new WeekView.EventClickListener() {
             @Override
             public void onEventClick(final WeekViewEvent event, RectF eventRect) {
