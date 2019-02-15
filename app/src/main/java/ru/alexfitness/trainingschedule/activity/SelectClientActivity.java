@@ -93,7 +93,7 @@ public class SelectClientActivity extends AFStopScanAppCompatActivity implements
                     ArrayList<TrainingsBalance> filteredTrainingsBalances = new ArrayList<>();
                     for (TrainingsBalance currentTrainingsBalance:trainingsBalances) {
                         String clientName = currentTrainingsBalance.getClientName();
-                        if(clientName.toLowerCase().startsWith(constraint.toString().toLowerCase())){
+                        if(clientName.toLowerCase().contains(constraint.toString().toLowerCase())){
                             filteredTrainingsBalances.add(currentTrainingsBalance);
                         }
                     }
