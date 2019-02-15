@@ -123,7 +123,6 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         finishAndRemoveTask();
     }
 
