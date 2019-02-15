@@ -45,7 +45,6 @@ public class NewEventActivity extends AFStopScanActivity implements TimePickerDi
 
     FloatingActionButton addNewEventButton;
     ProgressBar addNewEventProgressBar;
-    //EditText dateEditText;
     TextView dateTextView;
 
     @Override
