@@ -39,4 +39,5 @@
     <string name="pref_version_title">Версия</string>
     <string name="cant_connect_to_server">Не удается подключиться к серверу!</string>
     <string name="connection_timeout_exceeded">Превышен таймаут подключения!</string>
+    <string name="search">Поиск</string>
 </resources>
