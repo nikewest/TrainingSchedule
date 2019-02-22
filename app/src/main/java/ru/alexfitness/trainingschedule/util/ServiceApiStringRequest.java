@@ -11,6 +11,8 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
+
 public class ServiceApiStringRequest extends StringRequest {
 
     private static final String USERNAME = "admin";
@@ -24,9 +26,9 @@ public class ServiceApiStringRequest extends StringRequest {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         HashMap<String, String> headers = new HashMap<>();
-        String credentials = USERNAME + ":" + PASSWORD;
-        String auth = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-        headers.put("Authorization", auth);
+        //String credentials = USERNAME + ":" + PASSWORD;
+        //String auth = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+        headers.put("Authorization", ApiUrlBuilder.getBasicAuthHeader());
         return headers;
     }
 }

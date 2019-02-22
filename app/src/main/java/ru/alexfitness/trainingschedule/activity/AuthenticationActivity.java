@@ -1,12 +1,22 @@
 package ru.alexfitness.trainingschedule.activity;
 
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +37,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import ru.alexfitness.trainingschedule.model.Trainer;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
@@ -34,6 +47,8 @@ import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 import ru.alexfitness.trainingschedule.util.AFStopScanAppCompatActivity;
 import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonObjectRequest;
+import ru.alexfitness.trainingschedule.util.ServiceApiStringRequest;
+import ru.alexfitness.trainingschedule.model.Version;
 
 public class AuthenticationActivity extends AFStopScanAppCompatActivity {
 
@@ -44,6 +59,7 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
     private TextView loginTextView;
 
     private RequestQueue requestQueue;
+    private long loadRef;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -102,21 +118,72 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setEnableAuthEndTimeOut(false);
-
         setContentView(R.layout.activity_authentication);
-
         setSupportActionBar((android.support.v7.widget.Toolbar) findViewById(R.id.auth_toolbar));
 
         loginTextView = findViewById(R.id.loginTextView);
         loginTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AuthenticationActivity.this, NFCScanActivity.class);
-                startActivityForResult(intent, NFCSCAN_REQUEST_CODE);
+                ServiceApiStringRequest request = new ServiceApiStringRequest(Request.Method.GET, ApiUrlBuilder.getVersionUrl(), new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        PackageInfo packageInfo = null;
+                        try {
+                            packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            //
+                        }
+                        if(packageInfo!=null) {
+                            Version curVersion = new Version(packageInfo.versionName);
+                            final Version appVersion = new Version(response);
+                            if (curVersion.compareTo(appVersion) < 0) {
+                                enableLogin(false);
+                                Toast.makeText(AuthenticationActivity.this, R.string.new_version_available, Toast.LENGTH_SHORT).show();
+                                final DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(ApiUrlBuilder.getAPKUrl(appVersion.toString())));
+                                request.addRequestHeader("Authorization", ApiUrlBuilder.getBasicAuthHeader());
+                                request.setMimeType("application/vnd.android.package-archive");
+                                final String apkSubPath = "TS/app_" + appVersion.toString().replaceAll("\\.", "_") + ".apk";
+                                request.setDestinationInExternalFilesDir(AuthenticationActivity.this, null, apkSubPath);
+                                IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                                registerReceiver(new BroadcastReceiver() {
+                                    @Override
+                                    public void onReceive(Context context, Intent intent) {
+                                        if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                                            long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                                            if (downloadId == loadRef) {
+                                                unregisterReceiver(this);
+                                                //Uri appUri = Uri.fromFile(new File(getExternalFilesDir(null).getPath() + "/"+ apkSubPath));
+                                                Uri appUri = FileProvider.getUriForFile(AuthenticationActivity.this, getApplicationContext().getPackageName() + ".ru.alexfitness.trainingschedule.provider", new File(getExternalFilesDir(null).getPath() + "/"+ apkSubPath));
+                                                Intent installIntent = new Intent(Intent.ACTION_VIEW);
+                                                installIntent.setDataAndType(appUri, "application/vnd.android.package-archive");
+                                                installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                                startActivity(installIntent);
+                                            }
+                                        }
+                                    }
+                                }, intentFilter);
+                                loadRef = dm.enqueue(request);
+                            } else {
+                                Intent intent = new Intent(AuthenticationActivity.this, NFCScanActivity.class);
+                                startActivityForResult(intent, NFCSCAN_REQUEST_CODE);
+                            }
+                        } else {
+                            Toast.makeText(AuthenticationActivity.this, "Package info not found!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ErrorDialogBuilder.showDialog(AuthenticationActivity.this, error, null);
+                    }
+                });
+                getRequestQueue().add(request);
             }
         });
-
         loginProgressBar = findViewById(R.id.loginProgressBar);
 
     }

@@ -1,10 +1,15 @@
 package ru.alexfitness.trainingschedule.restApi;
 
+import android.util.Base64;
+
 import java.util.Date;
 
 import ru.alexfitness.trainingschedule.util.Converter;
 
 public final class ApiUrlBuilder {
+
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "bu1k@";
 
     private static String hostUrl;
     private final static String SERVICE_URL = "hs/TrainerScheduleApi/";
@@ -56,11 +61,33 @@ public final class ApiUrlBuilder {
         return getServiceUrl() + "Cards/" + cardHexCode;
     }
 
+    public static String getVersionUrl(){
+        return getServiceUrl() + "Version";
+    }
+
+    public static String getAPKUrl(String version){
+        return getServiceUrl() + "APK/" + version;
+    }
+
     public static String getHostUrl() {
         return hostUrl;
     }
 
     public static void setHostUrl(String hostUrl) {
         ApiUrlBuilder.hostUrl = hostUrl;
+    }
+
+    public static String getBasicAuthHeader(){
+        String credentials = USERNAME + ":" + PASSWORD;
+        String auth = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+        return auth;
+    }
+
+    public static String getUSERNAME() {
+        return USERNAME;
+    }
+
+    public static String getPASSWORD() {
+        return PASSWORD;
     }
 }

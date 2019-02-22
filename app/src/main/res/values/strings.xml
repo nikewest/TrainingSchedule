@@ -44,5 +44,6 @@
     <string name="cant_connect_to_server">Can\'t connect to server!</string>
     <string name="connection_timeout_exceeded">Connection timeout exceeded!</string>
     <string name="search">Search</string>
+    <string name="new_version_available">New version available</string>
 
 </resources>
