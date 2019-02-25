@@ -6,8 +6,8 @@ android {
         applicationId "ru.alexfitness.trainingschedule"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 20
-        versionName "1.5.4.11"
+        versionCode 21
+        versionName "1.5.4.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -29,4 +29,33 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.volley:volley:1.1.1'
     implementation project(':library')
+}
+
+task buildDebugApk(dependsOn: ['assembleDebug']){
+    doLast{
+        ext.versionName = project.android.defaultConfig.versionName
+        ext.apkName = ('app ' + ext.versionName).replaceAll('\\.','_') + '.apk'
+        println(ext.apkName)
+        ext.dest = file('\\\\olympic.sport/Services/1CEstart/TrainerScheduleApp/')
+        copy {
+            from ('build/outputs/apk/debug/'){
+                include '*.apk'
+            }
+            into ext.dest
+            rename { ext.apkName }
+        }
+    }
+}
+
+task buildReleaseApk(dependsOn: 'assembleRelease'){
+    ext.versionName = project.android.defaultConfig.versionName
+    ext.apkName = ('app ' + ext.versionName).replaceAll('\\.','_') + '.apk'
+    ext.dest = file('\\\\olympic.sport/Services/1CEstart/TrainerScheduleApp/')
+    copy {
+        from ('build/outputs/apk/release/'){
+            include '*.apk'
+        }
+        into ext.dest
+        rename { ext.apkName }
+    }
 }
