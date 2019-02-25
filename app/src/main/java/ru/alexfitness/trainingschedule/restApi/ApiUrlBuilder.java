@@ -69,6 +69,10 @@ public final class ApiUrlBuilder {
         return getServiceUrl() + "APK/" + version;
     }
 
+    public static String getClubsUrl(){
+        return getServiceUrl() + "Clubs";
+    }
+
     public static String getHostUrl() {
         return hostUrl;
     }

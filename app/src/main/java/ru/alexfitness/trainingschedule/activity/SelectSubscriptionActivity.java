@@ -134,7 +134,6 @@ public class SelectSubscriptionActivity extends AFStopScanActivity {
                                     dialogBuilder.setMessage(e.getMessage());
                                     dialogBuilder.show();
                                     Log.e(null, e.getMessage());
-                                    //Toast.makeText(SelectSubscriptionActivity.this, R.string.error_load_card_info, Toast.LENGTH_LONG).show();
                                     setWaitingState(false);
                                 }
                             }

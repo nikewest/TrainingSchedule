@@ -38,11 +38,11 @@ import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.model.TrainingsBalance;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 import ru.alexfitness.trainingschedule.util.AFApplication;
-import ru.alexfitness.trainingschedule.util.AFStopScanAppCompatActivity;
+import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
 
-public class SelectClientActivity extends AFStopScanAppCompatActivity implements AdapterView.OnItemClickListener, Response.Listener<JSONArray> {
+public class SelectClientActivity extends AFStopScanActivity implements AdapterView.OnItemClickListener, Response.Listener<JSONArray> {
 
     public static final String TRAININGS_BALANCE_EXTRA_KEY = "SelectClientActivity.extra.trainingsBalance";
 
@@ -119,8 +119,7 @@ public class SelectClientActivity extends AFStopScanAppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_client);
 
-        setSupportActionBar((android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar));
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setActionBar((android.widget.Toolbar) findViewById(R.id.main_toolbar));
 
         clientsListView = findViewById(R.id.clientsListView);
         addClientButton = findViewById(R.id.addClientButton);

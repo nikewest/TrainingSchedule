@@ -9,13 +9,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,19 +35,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import ru.alexfitness.trainingschedule.model.Trainer;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 
-import ru.alexfitness.trainingschedule.util.AFStopScanAppCompatActivity;
+import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonObjectRequest;
 import ru.alexfitness.trainingschedule.util.ServiceApiStringRequest;
 import ru.alexfitness.trainingschedule.model.Version;
 
-public class AuthenticationActivity extends AFStopScanAppCompatActivity {
+public class AuthenticationActivity extends AFStopScanActivity {
 
     public static final int NFCSCAN_REQUEST_CODE = 1;
     public static final String SETTINGS_PWD = "11235813";
@@ -121,7 +117,7 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
 
         setEnableAuthEndTimeOut(false);
         setContentView(R.layout.activity_authentication);
-        setSupportActionBar((android.support.v7.widget.Toolbar) findViewById(R.id.auth_toolbar));
+        setActionBar((android.widget.Toolbar) findViewById(R.id.auth_toolbar));
 
         loginTextView = findViewById(R.id.loginTextView);
         loginTextView.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +152,6 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
                                             long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                                             if (downloadId == loadRef) {
                                                 unregisterReceiver(this);
-                                                //Uri appUri = Uri.fromFile(new File(getExternalFilesDir(null).getPath() + "/"+ apkSubPath));
                                                 Uri appUri = FileProvider.getUriForFile(AuthenticationActivity.this, getApplicationContext().getPackageName() + ".ru.alexfitness.trainingschedule.provider", new File(getExternalFilesDir(null).getPath() + "/"+ apkSubPath));
                                                 Intent installIntent = new Intent(Intent.ACTION_VIEW);
                                                 installIntent.setDataAndType(appUri, "application/vnd.android.package-archive");
@@ -186,11 +181,6 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
         });
         loginProgressBar = findViewById(R.id.loginProgressBar);
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        finishAndRemoveTask();
     }
 
     @Override
@@ -225,7 +215,7 @@ public class AuthenticationActivity extends AFStopScanAppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i("SETTINGS PWD", pwdEditText.getText().toString());
-                        if(pwdEditText.getText().toString().equals(SETTINGS_PWD)){
+                        if(pwdEditText.getText().toString().equals(getString(R.string.admin_pwd))){
                             startActivity(new Intent(AuthenticationActivity.this, SettingsActivity.class));
                         } else {
                             Toast.makeText(AuthenticationActivity.this, R.string.wrong_admin_pwd, Toast.LENGTH_SHORT).show();
