@@ -157,6 +157,7 @@ public class AuthenticationActivity extends AFStopScanActivity {
                                                 installIntent.setDataAndType(appUri, "application/vnd.android.package-archive");
                                                 installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                                 startActivity(installIntent);
+                                                finishAndRemoveTask();
                                             }
                                         }
                                     }
