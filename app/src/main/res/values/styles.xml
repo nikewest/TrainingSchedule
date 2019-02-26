@@ -9,7 +9,7 @@
         <item name="android:layout_width">180dp</item>
         <item name="android:layout_height">180dp</item>
         <item name="android:visibility">gone</item>
-        <item name="colorAccent">@android:color/holo_orange_dark</item>
+        <item name="colorAccent">@android:color/holo_blue_light</item>
     </style>
 
 </resources>
