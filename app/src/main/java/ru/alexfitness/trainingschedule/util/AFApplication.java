@@ -35,11 +35,6 @@ public class AFApplication extends Application  {
         this.trainer = trainer;
     }
 
-    private String getServiceApiUrlFromPreferences(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getString(getString(R.string.pref_club_api_url_key), "");
-    }
-
     private String getMainServiceAddressFromPreferences(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPreferences.getString(getString(R.string.pref_service_address_key), "");
