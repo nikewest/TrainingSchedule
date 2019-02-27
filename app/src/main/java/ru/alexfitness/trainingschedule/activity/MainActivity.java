@@ -56,8 +56,11 @@ public class MainActivity extends AFStopScanActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putString(getString(R.string.pref_club_api_url_key), clubsListAdapter.getItem(position).getApiUrl());
-                editor.commit();
+                String clubApiAddress = clubsListAdapter.getItem(position).getApiUrl();
+                editor.putString(getString(R.string.pref_club_api_url_key), clubApiAddress);
+                if(editor.commit()){
+                    ApiUrlBuilder.setHostUrl(clubApiAddress);
+                }
                 Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
                 startActivity(intent);
             }

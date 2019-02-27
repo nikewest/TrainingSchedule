@@ -137,32 +137,53 @@ public class AuthenticationActivity extends AFStopScanActivity {
                             final Version appVersion = new Version(response);
                             if (curVersion.compareTo(appVersion) < 0) {
                                 enableLogin(false);
-                                Toast.makeText(AuthenticationActivity.this, R.string.new_version_available, Toast.LENGTH_SHORT).show();
-                                final DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(ApiUrlBuilder.getAPKUrl(appVersion.toString())));
-                                request.addRequestHeader("Authorization", ApiUrlBuilder.getBasicAuthHeader());
-                                request.setMimeType("application/vnd.android.package-archive");
-                                final String apkSubPath = "TS/app_" + appVersion.toString().replaceAll("\\.", "_") + ".apk";
-                                request.setDestinationInExternalFilesDir(AuthenticationActivity.this, null, apkSubPath);
-                                IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-                                registerReceiver(new BroadcastReceiver() {
+                                //Toast.makeText(AuthenticationActivity.this, R.string.new_version_available, Toast.LENGTH_SHORT).show();
+
+                                AlertDialog.Builder updateDialogBuilder = new AlertDialog.Builder(AuthenticationActivity.this);
+                                updateDialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onReceive(Context context, Intent intent) {
-                                        if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-                                            long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-                                            if (downloadId == loadRef) {
-                                                unregisterReceiver(this);
-                                                Uri appUri = FileProvider.getUriForFile(AuthenticationActivity.this, getApplicationContext().getPackageName() + ".ru.alexfitness.trainingschedule.provider", new File(getExternalFilesDir(null).getPath() + "/"+ apkSubPath));
-                                                Intent installIntent = new Intent(Intent.ACTION_VIEW);
-                                                installIntent.setDataAndType(appUri, "application/vnd.android.package-archive");
-                                                installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                                startActivity(installIntent);
-                                                finishAndRemoveTask();
-                                            }
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        final DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                                        DownloadManager.Request request;
+                                        try{
+                                            request = new DownloadManager.Request(Uri.parse(ApiUrlBuilder.getAPKUrl(appVersion.toString())));
+                                        } catch (Exception e){
+                                            AlertDialog.Builder dBuilder = new AlertDialog.Builder(AuthenticationActivity.this);
+                                            dBuilder.setPositiveButton(android.R.string.ok, null);
+                                            dBuilder.setMessage(e.getLocalizedMessage());
+                                            dBuilder.show();
+                                            return;
                                         }
+                                        request.addRequestHeader("Authorization", ApiUrlBuilder.getBasicAuthHeader());
+                                        request.setMimeType("application/vnd.android.package-archive");
+                                        final String apkSubPath = "TS/app_" + appVersion.toString().replaceAll("\\.", "_") + ".apk";
+                                        request.setDestinationInExternalFilesDir(AuthenticationActivity.this, null, apkSubPath);
+                                        IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                                        registerReceiver(new BroadcastReceiver() {
+                                            @Override
+                                            public void onReceive(Context context, Intent intent) {
+                                                if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                                                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                                                    if (downloadId == loadRef) {
+                                                        unregisterReceiver(this);
+                                                        Uri appUri = FileProvider.getUriForFile(AuthenticationActivity.this, getApplicationContext().getPackageName() + ".ru.alexfitness.trainingschedule.provider", new File(getExternalFilesDir(null).getPath() + "/"+ apkSubPath));
+                                                        Intent installIntent = new Intent(Intent.ACTION_VIEW);
+                                                        installIntent.setDataAndType(appUri, "application/vnd.android.package-archive");
+                                                        installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                                        startActivity(installIntent);
+                                                        finish();
+                                                    }
+                                                }
+                                            }
+                                        }, intentFilter);
+                                        loadRef = dm.enqueue(request);
                                     }
-                                }, intentFilter);
-                                loadRef = dm.enqueue(request);
+                                });
+                                updateDialogBuilder.setNegativeButton(android.R.string.cancel, null);
+                                updateDialogBuilder.setTitle(getString(R.string.new_version_available));
+                                updateDialogBuilder.setMessage(R.string.update_app);
+                                updateDialogBuilder.show();
+
                             } else {
                                 Intent intent = new Intent(AuthenticationActivity.this, NFCScanActivity.class);
                                 startActivityForResult(intent, NFCSCAN_REQUEST_CODE);

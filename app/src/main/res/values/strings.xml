@@ -47,5 +47,6 @@
     <string name="new_version_available">New version available</string>
     <string name="pref_club_api_url_key" translatable="false">pref_club_api_url_key</string>
     <string name="admin_pwd" translatable="false">11235813</string>
+    <string name="update_app">Update app?</string>
 
 </resources>

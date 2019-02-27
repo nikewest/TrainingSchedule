@@ -8,7 +8,7 @@ import ru.alexfitness.trainingschedule.model.Trainer;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
 
-public class AFApplication extends Application implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class AFApplication extends Application  {
 
     private Trainer trainer;
     private long pauseTimeStamp = 0;
@@ -37,20 +37,11 @@ public class AFApplication extends Application implements SharedPreferences.OnSh
 
     private String getServiceApiUrlFromPreferences(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         return sharedPreferences.getString(getString(R.string.pref_club_api_url_key), "");
     }
 
     private String getMainServiceAddressFromPreferences(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         return sharedPreferences.getString(getString(R.string.pref_service_address_key), "");
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_club_api_url_key))) {
-            ApiUrlBuilder.setHostUrl(getServiceApiUrlFromPreferences());
-        }
     }
 }
