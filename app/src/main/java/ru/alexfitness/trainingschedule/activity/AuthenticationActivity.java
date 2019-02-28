@@ -49,7 +49,6 @@ import ru.alexfitness.trainingschedule.model.Version;
 public class AuthenticationActivity extends AFStopScanActivity {
 
     public static final int NFCSCAN_REQUEST_CODE = 1;
-    public static final String SETTINGS_PWD = "11235813";
 
     private ProgressBar loginProgressBar;
     private TextView loginTextView;

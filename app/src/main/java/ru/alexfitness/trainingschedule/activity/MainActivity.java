@@ -50,7 +50,6 @@ public class MainActivity extends AFStopScanActivity {
         setActionBar((Toolbar) findViewById(R.id.mainToolbar));
         progressBar = findViewById(R.id.mainProgressBar);
         clubsListView = findViewById(R.id.clubsListView);
-        setWaitingState(true);
         clubsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,6 +64,12 @@ public class MainActivity extends AFStopScanActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setWaitingState(true);
         ServiceApiJsonArrayRequest request = new ServiceApiJsonArrayRequest(Request.Method.GET, ApiUrlBuilder.getClubsUrl(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -133,6 +138,9 @@ public class MainActivity extends AFStopScanActivity {
         if(state){
             progressBar.setVisibility(View.VISIBLE);
             clubsListView.setVisibility(View.INVISIBLE);
+            if(clubsListAdapter!=null){
+                clubsListAdapter.clear();
+            }
         } else {
             progressBar.setVisibility(View.INVISIBLE);
             clubsListView.setVisibility(View.VISIBLE);
