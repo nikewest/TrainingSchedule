@@ -1000,7 +1000,7 @@ public class WeekView extends View {
         if (mWeekViewLoader != null){
             int periodToFetch = (int) mWeekViewLoader.toWeekViewPeriodIndex(day);
             if (!isInEditMode() && (mFetchedPeriod < 0 || mFetchedPeriod != periodToFetch || mRefreshEvents)) {
-                mWeekViewLoader.onLoad(periodToFetch-1, periodToFetch); // TODO
+                mWeekViewLoader.onLoad(periodToFetch-1, periodToFetch+1); // TODO
                 //mWeekViewLoader.onLoad(periodToFetch, periodToFetch);
                 mFetchedPeriod = periodToFetch;
             }
