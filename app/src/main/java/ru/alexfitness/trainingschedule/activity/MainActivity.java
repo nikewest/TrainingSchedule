@@ -109,7 +109,6 @@ public class MainActivity extends AFStopScanActivity {
                         Log.e(null, e.getMessage());
                     }
                 }
-                //clubsListAdapter = new ArrayAdapter<Club>(MainActivity.this, android.R.layout.simple_list_item_1, clubsArray);
                 clubsListAdapter = new ClubsInfoArrayAdapter(MainActivity.this, R.layout.club_info_row, clubsArray);
                 clubsListView.setAdapter(clubsListAdapter);
                 setWaitingState(false);
