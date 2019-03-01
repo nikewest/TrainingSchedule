@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/clubName"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:drawableLeft="@drawable/baseline_fitness_center_white_24"
+        android:drawablePadding="15dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:textSize="24sp" />
+
+</android.support.v7.widget.CardView>
