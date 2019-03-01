@@ -16,7 +16,10 @@ public class AFApplication extends Application  {
     @Override
     public void onCreate() {
         super.onCreate();
-        ApiUrlBuilder.setHostUrl(getMainServiceAddressFromPreferences());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ApiUrlBuilder.setHostUrl(sharedPreferences.getString(getString(R.string.pref_service_address_key), ""));
+        ApiUrlBuilder.setLogin(sharedPreferences.getString(getString(R.string.pref_service_login_key),""));
+        ApiUrlBuilder.setPwd(sharedPreferences.getString(getString(R.string.pref_service_pwd_key), ""));
     }
 
     public long getPauseTimeStamp() {
@@ -35,8 +38,4 @@ public class AFApplication extends Application  {
         this.trainer = trainer;
     }
 
-    private String getMainServiceAddressFromPreferences(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getString(getString(R.string.pref_service_address_key), "");
-    }
 }

@@ -17,7 +17,11 @@ public abstract class ErrorDialogBuilder {
         } else if(error instanceof TimeoutError){
             errorText = context.getString(R.string.connection_timeout_exceeded);
         } else if (error.networkResponse!=null){
-            errorText = new String(error.networkResponse.data);
+            if(error.networkResponse.statusCode==401){
+                errorText = context.getString(R.string.auth_service_failed_msg);
+            } else {
+                errorText = new String(error.networkResponse.data);
+            }
         } else errorText = error.toString();
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setMessage(errorText);

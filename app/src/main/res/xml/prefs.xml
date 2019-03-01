@@ -4,8 +4,16 @@
         android:key="@string/pref_service_address_key"
         android:title="@string/pref_service_address_title"
         android:hint="@string/pref_service_address_hint">
-
     </EditTextPreference>
+
+    <EditTextPreference
+        android:key="@string/pref_service_login_key"
+        android:title="@string/pref_service_login_title" />
+
+    <EditTextPreference
+        android:key="@string/pref_service_pwd_key"
+        android:title="@string/pref_service_pwd_title"/>
+
     <EditTextPreference
         android:defaultValue="60"
         android:summary="@string/pref_schedule_time_step_hint"
@@ -25,6 +33,5 @@
     <Preference
         android:key="@string/pref_version_key"
         android:title="@string/pref_version_title" />
-
 
 </PreferenceScreen>

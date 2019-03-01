@@ -8,9 +8,11 @@ import ru.alexfitness.trainingschedule.util.Converter;
 
 public final class ApiUrlBuilder {
 
-    private static final String USERNAME = "admin";
-    private static final String PASSWORD = "bu1k@";
+    //private static final String USERNAME = "admin";
+    //private static final String PASSWORD = "bu1k@";
 
+    private static String login;
+    private static String pwd;
     private static String hostUrl;
     private final static String SERVICE_URL = "hs/TrainerScheduleApi/";
 
@@ -82,16 +84,24 @@ public final class ApiUrlBuilder {
     }
 
     public static String getBasicAuthHeader(){
-        String credentials = USERNAME + ":" + PASSWORD;
+        String credentials = login + ":" + pwd;
         String auth = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
         return auth;
     }
 
-    public static String getUSERNAME() {
-        return USERNAME;
+    public static String getLogin() {
+        return login;
     }
 
-    public static String getPASSWORD() {
-        return PASSWORD;
+    public static void setLogin(String login) {
+        ApiUrlBuilder.login = login;
+    }
+
+    public static String getPwd() {
+        return pwd;
+    }
+
+    public static void setPwd(String pwd) {
+        ApiUrlBuilder.pwd = pwd;
     }
 }

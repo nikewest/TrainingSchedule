@@ -35,13 +35,18 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Preference preference = findPreference(key);
         if(key.equals(getString(R.string.pref_service_address_key))) {
-            Preference preference = findPreference(key);
             preference.setSummary(((EditTextPreference) preference).getText());
             ApiUrlBuilder.setHostUrl(((EditTextPreference) preference).getText());
         }
+        if(key.equals(getString(R.string.pref_service_login_key))) {
+            ApiUrlBuilder.setLogin(((EditTextPreference) preference).getText());
+        }
+        if(key.equals(getString(R.string.pref_service_pwd_key))) {
+            ApiUrlBuilder.setPwd(((EditTextPreference) preference).getText());
+        }
     }
-
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
