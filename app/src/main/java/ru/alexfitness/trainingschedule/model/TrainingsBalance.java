@@ -12,7 +12,6 @@ public class TrainingsBalance implements Serializable {
     private String clientUid;
     private String clientName;
     private int balance;
-    private boolean expired;
 
     public static TrainingsBalance buildFromJSON(JSONObject jsonObject) throws JSONException {
         TrainingsBalance trainingsBalance = new TrainingsBalance();
@@ -21,7 +20,6 @@ public class TrainingsBalance implements Serializable {
         trainingsBalance.setTrainingUid(jsonObject.getString("trainingUid"));
         trainingsBalance.setTrainingName(jsonObject.getString("trainingName"));
         trainingsBalance.setBalance(jsonObject.getInt("balance"));
-        trainingsBalance.setExpired(jsonObject.getBoolean("expired"));
         return trainingsBalance;
     }
 
@@ -65,10 +63,4 @@ public class TrainingsBalance implements Serializable {
         this.trainingName = trainingName;
     }
 
-    public boolean isExpired() {
-        return expired;
-    }
-    public void setExpired(boolean expired) {
-        this.expired = expired;
-    }
 }
