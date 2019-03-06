@@ -8,9 +8,6 @@ import ru.alexfitness.trainingschedule.util.Converter;
 
 public final class ApiUrlBuilder {
 
-    //private static final String USERNAME = "admin";
-    //private static final String PASSWORD = "bu1k@";
-
     private static String login;
     private static String pwd;
     private static String hostUrl;
