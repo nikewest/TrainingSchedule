@@ -73,6 +73,7 @@ public class MainActivity extends AFStopScanActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setEnableAuthEndTimeOut(false);
         setContentView(R.layout.activity_main);
         setActionBar((Toolbar) findViewById(R.id.mainToolbar));
@@ -97,6 +98,10 @@ public class MainActivity extends AFStopScanActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ApiUrlBuilder.setHostUrl(sharedPreferences.getString(getString(R.string.pref_service_address_key), ""));
+
         setWaitingState(true);
         ServiceApiJsonArrayRequest request = new ServiceApiJsonArrayRequest(Request.Method.GET, ApiUrlBuilder.getClubsUrl(), new Response.Listener<JSONArray>() {
             @Override

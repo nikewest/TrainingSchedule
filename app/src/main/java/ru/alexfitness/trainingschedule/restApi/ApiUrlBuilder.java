@@ -11,6 +11,7 @@ public final class ApiUrlBuilder {
     private static String login;
     private static String pwd;
     private static String hostUrl;
+
     private final static String SERVICE_URL = "hs/TrainerScheduleApi/";
 
     private ApiUrlBuilder(){
@@ -102,3 +103,4 @@ public final class ApiUrlBuilder {
         ApiUrlBuilder.pwd = pwd;
     }
 }
+
