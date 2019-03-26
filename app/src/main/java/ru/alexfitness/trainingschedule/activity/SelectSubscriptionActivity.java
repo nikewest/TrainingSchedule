@@ -29,8 +29,10 @@ import java.util.Calendar;
 import ru.alexfitness.trainingschedule.R;
 import ru.alexfitness.trainingschedule.model.Card;
 import ru.alexfitness.trainingschedule.model.Subscription;
+import ru.alexfitness.trainingschedule.model.Trainer;
 import ru.alexfitness.trainingschedule.model.TrainingsBalance;
 import ru.alexfitness.trainingschedule.restApi.ApiUrlBuilder;
+import ru.alexfitness.trainingschedule.util.AFApplication;
 import ru.alexfitness.trainingschedule.util.AFStopScanActivity;
 import ru.alexfitness.trainingschedule.util.ErrorDialogBuilder;
 import ru.alexfitness.trainingschedule.util.ServiceApiJsonArrayRequest;
@@ -60,7 +62,10 @@ public class SelectSubscriptionActivity extends AFStopScanActivity {
         trainingsListView = findViewById(R.id.subscriptionsListView);
         selectSubProgressBar = findViewById(R.id.selectSubProgressBar);
 
-        JsonArrayRequest jsonArrayRequest = new ServiceApiJsonArrayRequest(Request.Method.GET, ApiUrlBuilder.getSubscriptionsUrl(),
+        AFApplication application =  (AFApplication) getApplication();
+        Trainer trainer = application.getTrainer();
+
+        JsonArrayRequest jsonArrayRequest = new ServiceApiJsonArrayRequest(Request.Method.GET, ApiUrlBuilder.getSubscriptionsUrl(trainer.getUid()),
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

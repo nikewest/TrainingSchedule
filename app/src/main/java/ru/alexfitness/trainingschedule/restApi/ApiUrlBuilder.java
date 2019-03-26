@@ -53,8 +53,8 @@ public final class ApiUrlBuilder {
         return getEventsUrl() + "?trainerUid=" + trainerUid + "&clientUid=" + clientUid + "&startDate=" + startDate + "&paid=" + paid + (paid ? ("&trainingUid=" + trainingUid) : ("&subscriptionUid=" + subUid));
     }
 
-    public static String getSubscriptionsUrl(){
-        return getServiceUrl() + "Subscriptions";
+    public static String getSubscriptionsUrl(String trainerUid){
+        return getServiceUrl() + "Subscriptions" + "?trainerUid=" + trainerUid;
     }
 
     public static String getCardUrl(String cardHexCode){
