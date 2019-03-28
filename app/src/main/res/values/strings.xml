@@ -20,12 +20,12 @@
     <string name="training_canceled">training canceled</string>
     <string name="training_writtenoff">training was written off</string>
     <string name="training_moved">training moved</string>
-    <string name="new_training_added">New event added</string>
+    <string name="new_training_added">New scheduleEvent added</string>
     <string name="training_not_added">Event not added</string>
 
     <string name="settings">Settings</string>
     <string name="add_new_training">Add training?</string>
-    <string name="cant_load_events">Can not load events</string>
+    <string name="cant_load_events">Can not load scheduleEvents</string>
     <string name="error_load_card_info">Can\'t read card info from server</string>
     <string name="toast_msg_edit_pref_schedule_time_step">must be a divider of 60</string>
     <string name="settings_pwd_dialog_message">Enter admin password</string>

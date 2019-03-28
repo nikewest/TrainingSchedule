@@ -234,7 +234,7 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
                     eventBottom = eventTop + tableEvent.getLength(rowHeight);
                     if(eventTop <= eventY + positionY && eventBottom >= eventY + positionY){
                         if(eventSingleClickListener!=null){
-                            eventSingleClickListener.onClick(tableEvent.event);
+                            eventSingleClickListener.onClick(tableEvent.scheduleEvent);
                             return true;
                         }
                     }
@@ -265,7 +265,7 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
                     eventBottom = eventTop + tableEvent.getLength(rowHeight);
                     if(eventTop <= eventY + positionY && eventBottom >= eventY + positionY){
                         if(eventDoubleClickListener!=null){
-                            eventDoubleClickListener.onDoubleClick(tableEvent.event);
+                            eventDoubleClickListener.onDoubleClick(tableEvent.scheduleEvent);
                             return true;
                         }
                     }
@@ -559,12 +559,12 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
                     eventTop = tableEvent.getTop(rowHeight) + columnHeaderHeight;
                     eventBottom = eventTop + tableEvent.getLength(rowHeight);
                     if(!(((positionY + viewHeight) < eventTop) || (positionY + columnHeaderHeight) > eventBottom)){
-                        backgroundPaint.setColor(tableEvent.event.getColor());
+                        backgroundPaint.setColor(tableEvent.scheduleEvent.getColor());
                         canvas.clipRect(Math.max(rowHeaderWidth, currentColumnLeft), Math.max(eventTop - positionY, columnHeaderHeight), currentColumnLeft + columnWidth, eventBottom - positionY, Region.Op.REPLACE);
                         canvas.drawRect(currentColumnLeft, Math.max(eventTop - positionY, columnHeaderHeight), currentColumnLeft + columnWidth, eventBottom - positionY, backgroundPaint);
 
-                        // draw event text
-                        eventText = tableEvent.getEvent().getName();
+                        // draw scheduleEvent text
+                        eventText = tableEvent.getScheduleEvent().getName();
                         StaticLayout textLayout = new StaticLayout(eventText, eventTextPaint, (int) columnWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                         canvas.save();
 
@@ -594,12 +594,12 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             eventBottom = eventTop + draggedEvent.getLength(rowHeight);
             currentColumnLeft = rowHeaderWidth + columnWidth * (dragColumnIndex - currentLeftColumnIndex) - columnOffset;
             if (!(((positionY + viewHeight) < eventTop) || (positionY + columnHeaderHeight) > eventBottom)) {
-                backgroundPaint.setColor(draggedEvent.event.getColor());
+                backgroundPaint.setColor(draggedEvent.scheduleEvent.getColor());
                 //canvas.clipRect(Math.max(rowHeaderWidth, currentColumnLeft), Math.max(eventTop - positionY, columnHeaderHeight), currentColumnLeft + columnWidth, eventBottom - positionY, Region.Op.REPLACE);
                 canvas.drawRect(currentColumnLeft, Math.max(eventTop - positionY, columnHeaderHeight), currentColumnLeft + columnWidth, eventBottom - positionY, backgroundPaint);
 
-                // draw event text
-                eventText = draggedEvent.getEvent().getName();
+                // draw scheduleEvent text
+                eventText = draggedEvent.getScheduleEvent().getName();
                 StaticLayout textLayout = new StaticLayout(eventText, eventTextPaint, (int) columnWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                 canvas.save();
 
@@ -942,7 +942,7 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
     // TABLE EVENT
     private class TableEvent implements Cloneable{
 
-        private Event event;
+        private ScheduleEvent scheduleEvent;
 
         private byte startHour;
         private byte startMinute;
@@ -950,16 +950,16 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
         private long length; //in minutes
         private boolean picked = false;
 
-        TableEvent(Event event){
-            if(event.getStart()==null || event.getEnd()==null){
-                throw new IllegalArgumentException("Event must have start and end!");
+        TableEvent(ScheduleEvent scheduleEvent){
+            if(scheduleEvent.getStart()==null || scheduleEvent.getEnd()==null){
+                throw new IllegalArgumentException("ScheduleEvent must have start and end!");
             }
-            setEvent(event);
+            setScheduleEvent(scheduleEvent);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(event.getStart());
+            calendar.setTime(scheduleEvent.getStart());
             setStartHour((byte) calendar.get(Calendar.HOUR_OF_DAY));
             setStartMinute((byte) calendar.get(Calendar.MINUTE));
-            long timeDiff = event.getEnd().getTime() - event.getStart().getTime();
+            long timeDiff = scheduleEvent.getEnd().getTime() - scheduleEvent.getStart().getTime();
             setLength(timeDiff / (60 * 1000));
         }
 
@@ -1004,12 +1004,12 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             return hourHeight * getLength() / 60;
         }
 
-        public Event getEvent() {
-            return event;
+        public ScheduleEvent getScheduleEvent() {
+            return scheduleEvent;
         }
 
-        public void setEvent(Event event) {
-            this.event = event;
+        public void setScheduleEvent(ScheduleEvent scheduleEvent) {
+            this.scheduleEvent = scheduleEvent;
         }
 
         public boolean isPicked() {
@@ -1036,9 +1036,9 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             this.newIndex = newIndex;
         }
 
-        public Event getEvent(){
+        public ScheduleEvent getEvent(){
             if(oldEvent!=null){
-                return oldEvent.getEvent();
+                return oldEvent.getScheduleEvent();
             } else return null;
         }
 
@@ -1051,8 +1051,8 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             invalidate();
         }
 
-        public void accept() throws Event.EventsIntersectionException {
-            //move event
+        public void accept() throws ScheduleEvent.EventsIntersectionException {
+            //move scheduleEvent
             setWaitingState(false);
             oldEvent.setPicked(false);
             draggedEvent = null;
@@ -1063,16 +1063,16 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             calendar.set(Calendar.HOUR_OF_DAY, newEvent.getStartHour());
             calendar.set(Calendar.MINUTE, newEvent.getStartMinute());
             calendar.set(Calendar.SECOND, 0);
-            newEvent.getEvent().setStart(calendar.getTime());
+            newEvent.getScheduleEvent().setStart(calendar.getTime());
 
             calendar.add(Calendar.MINUTE, (int) newEvent.getLength());
-            newEvent.getEvent().setEnd(calendar.getTime());
+            newEvent.getScheduleEvent().setEnd(calendar.getTime());
 
-            if(newEvent.getEvent().checkDates()){
+            if(newEvent.getScheduleEvent().checkDates()){
                 ArrayList<TableEvent> tableEvents = events.get(oldIndex);
                 try {
-                    addTableEvent(newEvent.getEvent());
-                } catch (Event.EventsIntersectionException e) {
+                    addTableEvent(newEvent.getScheduleEvent());
+                } catch (ScheduleEvent.EventsIntersectionException e) {
                     invalidate();
                     throw e;
                 }
@@ -1083,20 +1083,20 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
         }
     }
 
-    private void addTableEvent(Event event) throws Event.EventsIntersectionException {
-        ArrayList<TableEvent> tableEvents = events.get(dateToIndex(event.getStart()));
+    private void addTableEvent(ScheduleEvent scheduleEvent) throws ScheduleEvent.EventsIntersectionException {
+        ArrayList<TableEvent> tableEvents = events.get(dateToIndex(scheduleEvent.getStart()));
         if(tableEvents==null){
             tableEvents = new ArrayList<>();
-            events.put(dateToIndex(event.getStart()), tableEvents);
+            events.put(dateToIndex(scheduleEvent.getStart()), tableEvents);
         }
-        if(event.getStart()!=null || event.getEnd()!=null){
+        if(scheduleEvent.getStart()!=null || scheduleEvent.getEnd()!=null){
             //search intersections
             for(TableEvent curEvent: tableEvents){
-                if(Event.eventsIntersect(curEvent.getEvent(), event)){
-                    throw new Event.EventsIntersectionException();
+                if(ScheduleEvent.eventsIntersect(curEvent.getScheduleEvent(), scheduleEvent)){
+                    throw new ScheduleEvent.EventsIntersectionException();
                 }
             }
-            TableEvent tableEvent = new TableEvent(event);
+            TableEvent tableEvent = new TableEvent(scheduleEvent);
             tableEvents.add(tableEvent);
         }
     }
@@ -1104,12 +1104,12 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
     // INTERFACE IMPLEMENTATIONS
 
     @Override
-    public void onLoad(ArrayList<Event> events) throws Event.EventsIntersectionException {
+    public void onLoad(ArrayList<ScheduleEvent> scheduleEvents) throws ScheduleEvent.EventsIntersectionException {
         try {
-            for (Event event : events) {
-                addTableEvent(event);
+            for (ScheduleEvent scheduleEvent : scheduleEvents) {
+                addTableEvent(scheduleEvent);
             }
-        } catch (Event.EventsIntersectionException e) {
+        } catch (ScheduleEvent.EventsIntersectionException e) {
             throw e;
         } finally {
             setWaitingState(false);

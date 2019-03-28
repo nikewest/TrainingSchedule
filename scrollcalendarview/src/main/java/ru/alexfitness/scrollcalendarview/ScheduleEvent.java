@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 import java.util.Date;
 
-public class Event {
+public class ScheduleEvent {
 
     private String uid;
     private long id;
@@ -76,7 +76,7 @@ public class Event {
         }
     }
 
-    public Event(String uid, Date start, Date end, String name, String description){
+    public ScheduleEvent(String uid, Date start, Date end, String name, String description){
         this.uid = uid;
         this.start = start;
         this.end = end;
@@ -88,7 +88,7 @@ public class Event {
         }
     }
 
-    public Event(long id, Date start, Date end, String name, String description) {
+    public ScheduleEvent(long id, Date start, Date end, String name, String description) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -109,10 +109,10 @@ public class Event {
         return true;
     }
 
-    public static boolean eventsIntersect(Event event1, Event event2){
-        if(event1 == event2){
+    public static boolean eventsIntersect(ScheduleEvent scheduleEvent1, ScheduleEvent scheduleEvent2){
+        if(scheduleEvent1 == scheduleEvent2){
             return false;
         }
-        return event2.getEnd().after(event1.getStart()) && event1.getEnd().after(event2.getStart());
+        return scheduleEvent2.getEnd().after(scheduleEvent1.getStart()) && scheduleEvent1.getEnd().after(scheduleEvent2.getStart());
     }
 }
