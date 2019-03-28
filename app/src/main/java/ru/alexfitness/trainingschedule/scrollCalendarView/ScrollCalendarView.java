@@ -29,11 +29,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class ScrollCalendarView extends View implements EventsLoaderListener {
+import ru.alexfitness.trainingschedule.R;
+import ru.alexfitness.trainingschedule.model.ScheduleEvent;
 
-    //TODO refactor scaling
-    //TODO refactor drag n drop
-    //TODO refactor events keeping
+public class ScrollCalendarView extends View implements EventsLoaderListener {
 
     private static int CUSTOM_ROW_HEIGHT = 100;
     private static int CUSTOM_TIME_STEP = 60;
@@ -79,8 +78,8 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
     private float startDragX = 0; //x
     private int dragColumnIndex;
     private int initialDragColumnIndex;
-    private TableEvent draggedEvent = null;
-    private TableEvent initialDragEvent;
+    private CalendarEvent draggedEvent = null;
+    private CalendarEvent initialDragEvent;
     private float dragTouchOffset;
     private boolean isDragEvent = false;
     private float actualDragPosition;
@@ -90,18 +89,17 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
     private ScaleGestureDetector scaleGestureDetector;
     private DateTimeFormatter dateTimeFormatter;
     private ScrollDirection scrollDirection = ScrollDirection.NONE;
-    private EventSingleClickListener eventSingleClickListener;
-    private TableSingleClickListener tableSingleClickListener;
-    private EventDoubleClickListener eventDoubleClickListener;
-    private CalendarDoubleClickListener calendarDoubleClickListener;
-    private TableLongPressListener tableLongPressListener;
-    private EventDragListener eventDragListener;
+    private ScheduleEventSingleClickListener scheduleEventSingleClickListener;
+    private EmptySpaceSingleClickListener emptySpaceSingleClickListener;
+    private ScheduleEventDoubleClickListener scheduleEventDoubleClickListener;
+    private EmptySpaceDoubleClickListener emptySpaceDoubleClickListener;
+    private EmptySpaceLongPressListener emptySpaceLongPressListener;
 
     private boolean isScale = false;
     private boolean isFited = false;
     private EventsLoader eventsLoader;
 
-    private SparseArray<ArrayList<TableEvent>> events = new SparseArray<>();
+    private SparseArray<CalendarPeriod> periods = new SparseArray<>();
 
     private boolean waitingState = false;
     private WaitingStateListener waitingStateListener;
@@ -222,25 +220,23 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             }
             float eventX = e.getX();
             float eventY = e.getY();
-            int columnIndex = (int) (currentLeftColumnIndex + Math.floor((eventX - rowHeaderWidth) / columnWidth));
-            ArrayList<TableEvent> columnEvents = events.get(columnIndex);
-            if(columnEvents!=null){
-
+            int periodIndex = (int) (currentLeftColumnIndex + Math.floor((eventX - rowHeaderWidth) / columnWidth));
+            CalendarPeriod calendarPeriod = periods.get(periodIndex);
+            if(calendarPeriod!=null){
                 float eventTop, eventBottom;
-                for(TableEvent tableEvent:columnEvents){
-                    eventTop = tableEvent.getTop(rowHeight) + columnHeaderHeight;
-                    eventBottom = eventTop + tableEvent.getLength(rowHeight);
+                for(CalendarEvent calendarEvent : calendarPeriod.getCalendarEvents()){
+                    eventTop = calendarEvent.getTop(rowHeight) + columnHeaderHeight;
+                    eventBottom = eventTop + calendarEvent.getLength(rowHeight);
                     if(eventTop <= eventY + positionY && eventBottom >= eventY + positionY){
-                        if(eventSingleClickListener!=null){
-                            eventSingleClickListener.onClick(tableEvent.scheduleEvent);
+                        if(scheduleEventSingleClickListener !=null){
+                            scheduleEventSingleClickListener.onClick(calendarEvent.scheduleEvent);
                             return true;
                         }
                     }
                 }
             }
-            if(tableSingleClickListener!=null){
-                //tableSingleClickListener.onClick(getTimeFromPoint(eventX + positionX - rowHeaderWidth, eventY + positionY - columnHeaderHeight));
-                tableSingleClickListener.onClick(getTime(columnIndex, eventY + positionY - columnHeaderHeight));
+            if(emptySpaceSingleClickListener !=null){
+                emptySpaceSingleClickListener.onClick(getTime(periodIndex, eventY + positionY - columnHeaderHeight));
                 return true;
             }
             return true;
@@ -253,25 +249,24 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             }
             float eventX = e.getX();
             float eventY = e.getY();
-            int columnIndex = (int) (currentLeftColumnIndex + Math.floor((eventX - rowHeaderWidth) / columnWidth));
-            ArrayList<TableEvent> columnEvents = events.get(columnIndex);
-            if(columnEvents!=null){
+            int periodIndex = (int) (currentLeftColumnIndex + Math.floor((eventX - rowHeaderWidth) / columnWidth));
+            CalendarPeriod calendarPeriod = periods.get(periodIndex);
+            if(calendarPeriod!=null){
 
                 float eventTop, eventBottom;
-                for(TableEvent tableEvent:columnEvents){
-                    eventTop = tableEvent.getTop(rowHeight) + columnHeaderHeight;
-                    eventBottom = eventTop + tableEvent.getLength(rowHeight);
+                for(CalendarEvent calendarEvent : calendarPeriod.getCalendarEvents()){
+                    eventTop = calendarEvent.getTop(rowHeight) + columnHeaderHeight;
+                    eventBottom = eventTop + calendarEvent.getLength(rowHeight);
                     if(eventTop <= eventY + positionY && eventBottom >= eventY + positionY){
-                        if(eventDoubleClickListener!=null){
-                            eventDoubleClickListener.onDoubleClick(tableEvent.scheduleEvent);
+                        if(scheduleEventDoubleClickListener !=null){
+                            scheduleEventDoubleClickListener.onDoubleClick(calendarEvent.scheduleEvent);
                             return true;
                         }
                     }
                 }
             }
-            if(calendarDoubleClickListener !=null){
-                //calendarDoubleClickListener.onDoubleClick(getTimeFromPoint(eventX + positionX - rowHeaderWidth, eventY + positionY - columnHeaderHeight));
-                calendarDoubleClickListener.onDoubleClick(getTime(columnIndex, eventY + positionY - columnHeaderHeight));
+            if(emptySpaceDoubleClickListener !=null){
+                emptySpaceDoubleClickListener.onDoubleClick(getTime(periodIndex, eventY + positionY - columnHeaderHeight));
                 return true;
             }
             return true;
@@ -284,23 +279,22 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             }
             float eventX = e.getX();
             float eventY = e.getY();
-            int columnIndex = (int) (currentLeftColumnIndex + Math.floor((eventX - rowHeaderWidth) / columnWidth));
-
-            ArrayList<TableEvent> columnEvents = events.get(columnIndex);
-            if(columnEvents!=null){
-
+            int periodIndex = (int) (currentLeftColumnIndex + Math.floor((eventX - rowHeaderWidth) / columnWidth));
+            CalendarPeriod calendarPeriod = periods.get(periodIndex);
+            if(calendarPeriod!=null){
                 float eventTop, eventBottom;
-                for(TableEvent tableEvent:columnEvents){
-                    eventTop = tableEvent.getTop(rowHeight) + columnHeaderHeight;
-                    eventBottom = eventTop + tableEvent.getLength(rowHeight);
+                for(CalendarEvent calendarEvent : calendarPeriod.getCalendarEvents()){
+                    eventTop = calendarEvent.getTop(rowHeight) + columnHeaderHeight;
+                    eventBottom = eventTop + calendarEvent.getLength(rowHeight);
                     if(eventTop <= eventY + positionY && eventBottom >= eventY + positionY){
-                        CustomDragShadowBuilder shadowBuilder = new CustomDragShadowBuilder();
-                        startDragX = (columnIndex - currentLeftColumnIndex) * columnWidth + rowHeaderWidth;
-                        initialDragColumnIndex = columnIndex;
-                        dragColumnIndex = columnIndex;
+                        //TODO schedule event drag n drop start
+                        /*CustomDragShadowBuilder shadowBuilder = new CustomDragShadowBuilder();
+                        startDragX = (periodIndex - currentLeftColumnIndex) * columnWidth + rowHeaderWidth;
+                        initialDragColumnIndex = periodIndex;
+                        dragColumnIndex = periodIndex;
                         try {
-                            initialDragEvent = tableEvent;
-                            draggedEvent = (TableEvent) tableEvent.clone();
+                            initialDragEvent = calendarEvent;
+                            draggedEvent = (CalendarEvent) calendarEvent.clone();
                         } catch (CloneNotSupportedException e1) {
                             e1.printStackTrace();
                             return;
@@ -309,13 +303,13 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
                         initialDragEvent.setPicked(true);
                         dragTouchOffset = eventY - eventTop + positionY;
                         startDrag(null, shadowBuilder, null, 0);
+                        */
                         return;
                     }
                 }
             }
-            if(tableLongPressListener!=null){
-                //tableLongPressListener.onLongPress(getTimeFromPoint(eventX + positionX - rowHeaderWidth, eventY + positionY - columnHeaderHeight));
-                tableLongPressListener.onLongPress(getTime(columnIndex, eventY + positionY - columnHeaderHeight));
+            if(emptySpaceLongPressListener !=null){
+                emptySpaceLongPressListener.onLongPress(getTime(periodIndex, eventY + positionY - columnHeaderHeight));
             }
         }
 
@@ -379,11 +373,9 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
                     invalidate();
                     return true;
                 case DragEvent.ACTION_DROP:
-                    //initialDragEvent.setPicked(false);
-                    if(eventDragListener!=null){
-                        setWaitingState(true);
-                        eventDragListener.onDrop(new EventMover(initialDragEvent, draggedEvent, initialDragColumnIndex, dragColumnIndex));
-                    }
+                    //TODO event drop
+                    setWaitingState(true);
+                    //eventDragListener.onDrop(new EventMover(initialDragEvent, draggedEvent, initialDragColumnIndex, dragColumnIndex));
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     /*draggedEvent = null;
@@ -545,31 +537,24 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
         float eventTop, eventBottom;
         String eventText;
         for(int columnIndex = 0; columnIndex < visibleColumnCount+1; columnIndex++){
-            ArrayList<TableEvent> currentColumnEvents = events.get(currentLeftColumnIndex + columnIndex);
-            if(currentColumnEvents!=null){
+            //ArrayList<CalendarEvent> currentColumnEvents = events.get(currentLeftColumnIndex + columnIndex);
+            CalendarPeriod calendarPeriod = periods.get(currentLeftColumnIndex + columnIndex);
+            if(calendarPeriod!=null){
                 currentColumnLeft = rowHeaderWidth + columnWidth * columnIndex - columnOffset;
-                for(TableEvent tableEvent : currentColumnEvents){
-
-                    if(tableEvent.isPicked()){
-                        continue;
-                    }
-
-                    eventTop = tableEvent.getTop(rowHeight) + columnHeaderHeight;
-                    eventBottom = eventTop + tableEvent.getLength(rowHeight);
+                for(CalendarEvent calendarEvent : calendarPeriod.getCalendarEvents()){
+                    eventTop = calendarEvent.getTop(rowHeight) + columnHeaderHeight;
+                    eventBottom = eventTop + calendarEvent.getLength(rowHeight);
                     if(!(((positionY + viewHeight) < eventTop) || (positionY + columnHeaderHeight) > eventBottom)){
-                        backgroundPaint.setColor(tableEvent.scheduleEvent.getColor());
+                        backgroundPaint.setColor(calendarEvent.scheduleEvent.getColor());
                         canvas.clipRect(Math.max(rowHeaderWidth, currentColumnLeft), Math.max(eventTop - positionY, columnHeaderHeight), currentColumnLeft + columnWidth, eventBottom - positionY, Region.Op.REPLACE);
                         canvas.drawRect(currentColumnLeft, Math.max(eventTop - positionY, columnHeaderHeight), currentColumnLeft + columnWidth, eventBottom - positionY, backgroundPaint);
-
                         // draw scheduleEvent text
-                        eventText = tableEvent.getScheduleEvent().getName();
+                        eventText = calendarEvent.getScheduleEvent().getName();
                         StaticLayout textLayout = new StaticLayout(eventText, eventTextPaint, (int) columnWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                         canvas.save();
-
                         canvas.translate(currentColumnLeft + eventTextPadding, eventTop - positionY + eventTextPadding);
                         textLayout.draw(canvas);
                         canvas.restore();
-
                     }
                 }
             }
@@ -699,7 +684,6 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
     private void updateEvents() {
         if(eventsLoader!=null){
             setWaitingState(true);
-            events.clear();
             Calendar startLoadDate = indexToDate(currentPeriodIndex - periodLength);
             Calendar endLoadDate = indexToDate(currentPeriodIndex + periodLength);
             eventsLoader.loadEvents(startLoadDate, endLoadDate);
@@ -892,73 +876,90 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
         fitColumn();
     }
 
-    public EventSingleClickListener getEventSingleClickListener() {
-        return eventSingleClickListener;
+    public ScheduleEventSingleClickListener getScheduleEventSingleClickListener() {
+        return scheduleEventSingleClickListener;
     }
 
-    public void setEventSingleClickListener(EventSingleClickListener eventSingleClickListener) {
-        this.eventSingleClickListener = eventSingleClickListener;
+    public void setScheduleEventSingleClickListener(ScheduleEventSingleClickListener scheduleEventSingleClickListener) {
+        this.scheduleEventSingleClickListener = scheduleEventSingleClickListener;
     }
 
-    public TableSingleClickListener getTableSingleClickListener() {
-        return tableSingleClickListener;
+    public EmptySpaceSingleClickListener getEmptySpaceSingleClickListener() {
+        return emptySpaceSingleClickListener;
     }
 
-    public void setTableSingleClickListener(TableSingleClickListener tableSingleClickListener) {
-        this.tableSingleClickListener = tableSingleClickListener;
+    public void setEmptySpaceSingleClickListener(EmptySpaceSingleClickListener emptySpaceSingleClickListener) {
+        this.emptySpaceSingleClickListener = emptySpaceSingleClickListener;
     }
 
-    public EventDoubleClickListener getEventDoubleClickListener() {
-        return eventDoubleClickListener;
+    public ScheduleEventDoubleClickListener getScheduleEventDoubleClickListener() {
+        return scheduleEventDoubleClickListener;
     }
 
-    public void setEventDoubleClickListener(EventDoubleClickListener eventDoubleClickListener) {
-        this.eventDoubleClickListener = eventDoubleClickListener;
+    public void setScheduleEventDoubleClickListener(ScheduleEventDoubleClickListener scheduleEventDoubleClickListener) {
+        this.scheduleEventDoubleClickListener = scheduleEventDoubleClickListener;
     }
 
-    public CalendarDoubleClickListener getCalendarDoubleClickListener() {
-        return calendarDoubleClickListener;
+    public EmptySpaceDoubleClickListener getEmptySpaceDoubleClickListener() {
+        return emptySpaceDoubleClickListener;
     }
 
-    public void setCalendarDoubleClickListener(CalendarDoubleClickListener calendarDoubleClickListener) {
-        this.calendarDoubleClickListener = calendarDoubleClickListener;
+    public void setEmptySpaceDoubleClickListener(EmptySpaceDoubleClickListener emptySpaceDoubleClickListener) {
+        this.emptySpaceDoubleClickListener = emptySpaceDoubleClickListener;
     }
 
-    public TableLongPressListener getTableLongPressListener() {
-        return tableLongPressListener;
+    public EmptySpaceLongPressListener getEmptySpaceLongPressListener() {
+        return emptySpaceLongPressListener;
     }
 
-    public void setTableLongPressListener(TableLongPressListener tableLongPressListener) {
-        this.tableLongPressListener = tableLongPressListener;
-    }
-
-    public void setEventDragListener(EventDragListener eventDragListener) {
-        this.eventDragListener = eventDragListener;
+    public void setEmptySpaceLongPressListener(EmptySpaceLongPressListener emptySpaceLongPressListener) {
+        this.emptySpaceLongPressListener = emptySpaceLongPressListener;
     }
 
 
-    // TABLE EVENT
-    private class TableEvent implements Cloneable{
+    // CALENDAR
+
+    private class CalendarPeriod {
+
+        private ArrayList<CalendarEvent> calendarEvents = new ArrayList<>();
+
+        public ArrayList<CalendarEvent> getCalendarEvents() {
+            return calendarEvents;
+        }
+
+        public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
+            this.calendarEvents = calendarEvents;
+        }
+
+        public void addCalendarEvent(CalendarEvent scheduleEvent){
+            calendarEvents.add(scheduleEvent);
+        }
+
+    }
+
+    private class CalendarEvent implements Cloneable{
 
         private ScheduleEvent scheduleEvent;
 
-        private byte startHour;
-        private byte startMinute;
+        private int startHour;
+        private int startMinute;
 
-        private long length; //in minutes
-        private boolean picked = false;
+        private int endHour;
+        private int endMinute;
 
-        TableEvent(ScheduleEvent scheduleEvent){
+        private int length; //in minutes
+
+        CalendarEvent(ScheduleEvent scheduleEvent){
             if(scheduleEvent.getStart()==null || scheduleEvent.getEnd()==null){
                 throw new IllegalArgumentException("ScheduleEvent must have start and end!");
             }
+
             setScheduleEvent(scheduleEvent);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(scheduleEvent.getStart());
-            setStartHour((byte) calendar.get(Calendar.HOUR_OF_DAY));
-            setStartMinute((byte) calendar.get(Calendar.MINUTE));
-            long timeDiff = scheduleEvent.getEnd().getTime() - scheduleEvent.getStart().getTime();
-            setLength(timeDiff / (60 * 1000));
+            setStartHour(scheduleEvent.getStart().get(Calendar.HOUR_OF_DAY));
+            setStartMinute(scheduleEvent.getStart().get(Calendar.MINUTE));
+
+            long timeDiff = scheduleEvent.getEnd().getTimeInMillis() - scheduleEvent.getStart().getTimeInMillis();
+            setLength((int) (timeDiff / (60 * 1000)));
         }
 
         @Override
@@ -966,19 +967,19 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             return super.clone();
         }
 
-        public byte getStartHour() {
+        public int getStartHour() {
             return startHour;
         }
 
-        public void setStartHour(byte startHour) {
+        public void setStartHour(int startHour) {
             this.startHour = startHour;
         }
 
-        public byte getStartMinute() {
+        public int getStartMinute() {
             return startMinute;
         }
 
-        public void setStartMinute(byte startMinute) {
+        public void setStartMinute(int startMinute) {
             this.startMinute = startMinute;
         }
 
@@ -986,7 +987,7 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
             return length;
         }
 
-        public void setLength(long length) {
+        public void setLength(int length) {
             this.length = length;
         }
 
@@ -1009,110 +1010,84 @@ public class ScrollCalendarView extends View implements EventsLoaderListener {
         public void setScheduleEvent(ScheduleEvent scheduleEvent) {
             this.scheduleEvent = scheduleEvent;
         }
-
-        public boolean isPicked() {
-            return picked;
-        }
-
-        public void setPicked(boolean picked) {
-            this.picked = picked;
-        }
     }
 
     public class EventMover {
 
-        private TableEvent oldEvent;
-        private TableEvent newEvent;
+        private CalendarEvent oldEvent;
+        private CalendarEvent newEvent;
         private int oldIndex;
         private int newIndex;
 
 
-        protected EventMover(TableEvent oldEvent, TableEvent newEvent, int oldIndex, int newIndex){
-            this.oldEvent = oldEvent;
-            this.newEvent = newEvent;
-            this.oldIndex = oldIndex;
-            this.newIndex = newIndex;
-        }
-
-        public ScheduleEvent getEvent(){
-            if(oldEvent!=null){
-                return oldEvent.getScheduleEvent();
-            } else return null;
-        }
-
-        public void decline(){
-            //do nothing
-            setWaitingState(false);
-            oldEvent.setPicked(false);
-            draggedEvent = null;
-            isDragEvent = false;
-            invalidate();
-        }
-
-        public void accept() throws ScheduleEvent.EventsIntersectionException {
-            //move scheduleEvent
-            setWaitingState(false);
-            oldEvent.setPicked(false);
-            draggedEvent = null;
-            isDragEvent = false;
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(indexToDate(newIndex).getTime());
-            calendar.set(Calendar.HOUR_OF_DAY, newEvent.getStartHour());
-            calendar.set(Calendar.MINUTE, newEvent.getStartMinute());
-            calendar.set(Calendar.SECOND, 0);
-            newEvent.getScheduleEvent().setStart(calendar.getTime());
-
-            calendar.add(Calendar.MINUTE, (int) newEvent.getLength());
-            newEvent.getScheduleEvent().setEnd(calendar.getTime());
-
-            if(newEvent.getScheduleEvent().checkDates()){
-                ArrayList<TableEvent> tableEvents = events.get(oldIndex);
-                try {
-                    addTableEvent(newEvent.getScheduleEvent());
-                } catch (ScheduleEvent.EventsIntersectionException e) {
-                    invalidate();
-                    throw e;
-                }
-                tableEvents.remove(oldEvent);
-            }
-
-            invalidate();
-        }
+//        protected EventMover(CalendarEvent oldEvent, CalendarEvent newEvent, int oldIndex, int newIndex){
+//            this.oldEvent = oldEvent;
+//            this.newEvent = newEvent;
+//            this.oldIndex = oldIndex;
+//            this.newIndex = newIndex;
+//        }
+//
+//        public ScheduleEvent getEvent(){
+//            if(oldEvent!=null){
+//                return oldEvent.getScheduleEvent();
+//            } else return null;
+//        }
+//
+//        public void decline(){
+//            //do nothing
+//            setWaitingState(false);
+//            oldEvent.setPicked(false);
+//            draggedEvent = null;
+//            isDragEvent = false;
+//            invalidate();
+//        }
+//
+//        public void accept(){
+//            //move scheduleEvent
+//            setWaitingState(false);
+//            oldEvent.setPicked(false);
+//            draggedEvent = null;
+//            isDragEvent = false;
+//
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(indexToDate(newIndex).getTime());
+//            calendar.set(Calendar.HOUR_OF_DAY, newEvent.getStartHour());
+//            calendar.set(Calendar.MINUTE, newEvent.getStartMinute());
+//            calendar.set(Calendar.SECOND, 0);
+//            newEvent.getScheduleEvent().setStart(calendar.getTime());
+//
+//            calendar.add(Calendar.MINUTE, (int) newEvent.getLength());
+//            newEvent.getScheduleEvent().setEnd(calendar.getTime());
+//
+//            ArrayList<CalendarEvent> calendarEvents = events.get(oldIndex);
+//            addTableEvent(newEvent.getScheduleEvent());
+//            calendarEvents.remove(oldEvent);
+//
+//            invalidate();
+//        }
     }
 
-    private void addTableEvent(ScheduleEvent scheduleEvent) throws ScheduleEvent.EventsIntersectionException {
-        ArrayList<TableEvent> tableEvents = events.get(dateToIndex(scheduleEvent.getStart()));
-        if(tableEvents==null){
-            tableEvents = new ArrayList<>();
-            events.put(dateToIndex(scheduleEvent.getStart()), tableEvents);
+    private void addTableEvent(ScheduleEvent scheduleEvent){
+        int scheduleEventPeriodIndex = scheduleEvent.getPeriodIndex();
+        CalendarPeriod calendarPeriod = periods.get(scheduleEventPeriodIndex);
+        if(calendarPeriod==null){
+            calendarPeriod = new CalendarPeriod();
+            periods.put(scheduleEventPeriodIndex, calendarPeriod);
         }
-        if(scheduleEvent.getStart()!=null || scheduleEvent.getEnd()!=null){
-            //search intersections
-            for(TableEvent curEvent: tableEvents){
-                if(ScheduleEvent.eventsIntersect(curEvent.getScheduleEvent(), scheduleEvent)){
-                    throw new ScheduleEvent.EventsIntersectionException();
-                }
-            }
-            TableEvent tableEvent = new TableEvent(scheduleEvent);
-            tableEvents.add(tableEvent);
-        }
+        calendarPeriod.addCalendarEvent(new CalendarEvent(scheduleEvent));
     }
+
 
     // INTERFACE IMPLEMENTATIONS
 
     @Override
-    public void onLoad(ArrayList<ScheduleEvent> scheduleEvents) throws ScheduleEvent.EventsIntersectionException {
-        try {
-            for (ScheduleEvent scheduleEvent : scheduleEvents) {
-                addTableEvent(scheduleEvent);
-            }
-        } catch (ScheduleEvent.EventsIntersectionException e) {
-            throw e;
-        } finally {
-            setWaitingState(false);
-            invalidate();
+    public void onLoad(ArrayList<ScheduleEvent> scheduleEvents){
+        periods.clear();
+        for (ScheduleEvent scheduleEvent : scheduleEvents) {
+            addTableEvent(scheduleEvent);
         }
+        setWaitingState(false);
+        invalidate();
     }
 
 }

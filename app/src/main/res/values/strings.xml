@@ -25,7 +25,7 @@
 
     <string name="settings">Settings</string>
     <string name="add_new_training">Add training?</string>
-    <string name="cant_load_events">Can not load scheduleEvents</string>
+    <string name="cant_load_events">Can not load calendarEvents</string>
     <string name="error_load_card_info">Can\'t read card info from server</string>
     <string name="toast_msg_edit_pref_schedule_time_step">must be a divider of 60</string>
     <string name="settings_pwd_dialog_message">Enter admin password</string>

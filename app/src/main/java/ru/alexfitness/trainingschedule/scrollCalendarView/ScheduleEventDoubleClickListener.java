@@ -1,5 +1,7 @@
 package ru.alexfitness.trainingschedule.scrollCalendarView;
 
-public interface EventDoubleClickListener {
+import ru.alexfitness.trainingschedule.model.ScheduleEvent;
+
+public interface ScheduleEventDoubleClickListener {
     void onDoubleClick(ScheduleEvent scheduleEvent);
 }
